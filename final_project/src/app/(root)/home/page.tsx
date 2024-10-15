@@ -1,4 +1,6 @@
-import Navbar from "@/components/Navbar"
+import { Navbar } from "@/components"
+import ProductsList from "@/components/ProductsList"
+
 
 
 export default function Home() {
@@ -6,6 +8,8 @@ export default function Home() {
     <>
       <Navbar/>
       <div>Home</div>
+      <ProductsList/>
+      
     </>
     
   )

@@ -1,20 +1,8 @@
+import { UserDocument } from "@/types/types";
 import mongoose, { Schema, model } from "mongoose";
 
-export interface UserDocument {
-    _id: string
-    email: string
-    password: string
-    name: string
-    phone: string
-    image: string
-    createAt: Date
-    updateAt: Date
-    products: mongoose.Types.ObjectId[]
-    followers: mongoose.Types.ObjectId[]
-    following: mongoose.Types.ObjectId[]
-}
-
-const UserSchema = new Schema<UserDocument> ({
+const UserSchema = new Schema<UserDocument>(
+    {
         email: {
             type: String,
             unique: true,
@@ -32,11 +20,41 @@ const UserSchema = new Schema<UserDocument> ({
             type: String,
             required: [true, "Name is required"],
         },
+        phone: {
+            type: String,
+            required: false,
+        },
+        image: {
+            type: String,
+            required: false,
+        },
+        address: {
+            type: String,
+            required: false
+        },
+        products: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Product",
+            },
+        ],
+        followers: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        following: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
     },
     {
         timestamps: true,
     }
-)
+);
 
-const User = mongoose.models.User || model<UserDocument>('User', UserSchema)
-export default User
+const User = mongoose.models.User || model<UserDocument>("User", UserSchema);
+export default User;

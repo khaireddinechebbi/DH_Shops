@@ -12,8 +12,8 @@ import { signOut } from "next-auth/react";
 
 export default function Navbar() {
   return (
-    <NavigationMenu className="flex items-center">
-      <NavigationMenuList className="flex space-x-4">
+    <NavigationMenu className="items-center flex w-full">
+      <NavigationMenuList className="w-full flex items-center justify-between p-4">
         {/* Home Link */}
         <NavigationMenuItem>
           <Link href="/home" legacyBehavior passHref>

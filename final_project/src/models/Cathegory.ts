@@ -1,5 +1,5 @@
 import { CategoryDocument } from "@/types/types";
-import mongoose, { Schema, Types, model } from "mongoose"; // Correct import for mongoose
+import mongoose, { Schema, Types, model } from "mongoose";
 
 const categorySchema = new Schema<CategoryDocument>(
     {
@@ -8,15 +8,14 @@ const categorySchema = new Schema<CategoryDocument>(
             required: true,
         },
         user: {
-            type: Types.ObjectId, // Corrected the position of the user field
-            ref: "User", // Use the string representation of the model name
+            type: Types.ObjectId,
+            ref: "User",
         },
     },
     {
-        timestamps: true, // Optionally add timestamps for createdAt and updatedAt
+        timestamps: true,
     }
 );
 
-// Create and export the model
 const Category = mongoose.models.Category || model<CategoryDocument>("Category", categorySchema);
 export default Category;

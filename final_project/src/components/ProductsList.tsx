@@ -1,67 +1,70 @@
-"use client";
+import Image from 'next/image';
+import React from 'react';
 
-import { ProductDocuments, UserDocument } from "@/types/types"; // Adjust path accordingly
-import { useEffect, useState } from "react";
-import ProductCard from "./ProductCard";
-
-// Fetching user data by ID
-const getUserById = async (userId: string): Promise<UserDocument | null> => {
-    try {
-        const res = await fetch(`http://localhost:3000/api/users/${userId}`);
-        if (!res.ok) {
-            throw new Error("Fetching user failed");
-        }
-        return res.json();
-    } catch (error) {
-        console.log("Error: ", error);
-        return null; // Return null in case of an error
-    }
+// Define the type for Product
+interface Product {
+  _id: string; // Assuming you have an ID field
+  name: string;
+  images: string[]; // Array of image URLs
+  description: string;
+  priceInCents: number; // Price in cents
 }
 
-const getProducts = async (): Promise<{ products: ProductDocuments[] }> => {
-    try {
-        const res = await fetch('http://localhost:3000/api/products', { cache: "no-store" });
-        if (!res.ok) {
-            throw new Error("Fetching products failed");
-        }
-        return res.json();
-    } catch (error) {
-        console.log("Error: ", error);
-        return { products: [] };
-    }
+// Define the type for the API response
+interface ProductsResponse {
+  products: Product[];
 }
 
-export default function ProductsList() {
-    const [products, setProducts] = useState<ProductDocuments[]>([]);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const [owners, setOwners] = useState<{ [key: string]: UserDocument | null }>({});
+// Function to fetch products
+const getProducts = async (): Promise<ProductsResponse | null> => {
+  try {
+    const res = await fetch('http://localhost:3000/api/products', {
+      cache: 'no-cache',
+    });
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            const { products } = await getProducts();
-            setProducts(products);
+    if (!res.ok) {
+      throw new Error('Failed fetching');
+    }
 
-            // Fetch owner details for each product
-            const ownerPromises = products.map(async (product) => {
-                const ownerData = await getUserById(product.owner.toString());
-                return { id: product.owner.toString(), data: ownerData };
-            });
-            const ownerData = await Promise.all(ownerPromises);
-            const ownersMap = ownerData.reduce((acc, { id, data }) => {
-                acc[id] = data;
-                return acc;
-            }, {} as { [key: string]: UserDocument | null });
-            setOwners(ownersMap);
-        };
+    return res.json();
+  } catch (err) {
+    console.error(err);
+    return null; // Return null on error
+  }
+};
 
-        fetchProducts();
-    }, []);
+// Main ProductsList component
+export default async function ProductsList() {
+  const data = await getProducts();
+  
+  // If there is an error or no products, you might want to handle that
+  if (!data || !data.products) {
+    return <div>Error loading products</div>;
+  }
 
-    return (
-        <>
-            {products.map((product) => (
-                <ProductCard key={product._id} product={product} />
-            ))}
-        </>
-    )
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      {data.products.map((product) => (
+        <article key={product._id} className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
+          {/* Check if images exist and have at least one entry */}
+          <Image
+            alt={product.name}
+            src={product.images && product.images.length > 0 ? product.images[0] : '/fallback-image.jpg'} // Fallback image if no product image
+            width={500} // Set a width for the image
+            height={300} // Set a height for the image
+            className="h-56 w-full rounded-xl object-cover shadow-xl transition group-hover:grayscale-[50%]"
+          />
+          <div className="p-4">
+            <h2 className="mt-2 text-lg font-medium text-gray-900">{product.name}</h2>
+            <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+              {product.description}
+            </p>
+            <p className="mt-2 text-lg font-semibold text-gray-800">
+              ${(product.priceInCents / 100).toFixed(2)} {/* Convert to dollars */}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+  );
 }

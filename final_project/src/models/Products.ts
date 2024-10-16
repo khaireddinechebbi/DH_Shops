@@ -7,9 +7,9 @@ const ProductSchema = new Schema<ProductDocuments>(
             type: String,
             required: true
         },
-        image: [{
+        images: [{
             type: String,
-            required: true
+            required: false
         }],
         priceInCents: {
             type: Number,

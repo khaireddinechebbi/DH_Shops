@@ -29,7 +29,7 @@ export interface ProductDocuments {
     _id: string
     name: string
     sizes: [string]
-    image: [string]
+    images: [string]
     category: string
     purchased: boolean
     priceInCents: number

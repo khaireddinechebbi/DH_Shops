@@ -5,7 +5,7 @@ import Link from "next/link";
 import { register } from "@/actions/register";
 
 
-export default function Register() {
+export default function SignUp() {
     const [error, setError] = useState<string>();
     const router = useRouter();
     const ref = useRef<HTMLFormElement>(null);

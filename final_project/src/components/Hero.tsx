@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import React from 'react';
+import { FacebookButton, GoogleButton } from './LoginButtons';
 
 export default function Hero() {
     return (
@@ -22,6 +23,10 @@ export default function Hero() {
                         Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt illo tenetur fuga ducimus
                         numquam ea!
                     </p>
+                    <div>
+                        <GoogleButton/>
+                        <FacebookButton/>
+                    </div>
 
                     <div className="mt-8 flex flex-wrap gap-4 text-center">
                         <Link
@@ -33,9 +38,9 @@ export default function Hero() {
 
                         <Link
                             className="block w-full rounded border border-blue-600 px-12 py-3 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring active:bg-blue-500 sm:w-auto"
-                            href="/register"
+                            href="/signup"
                         >
-                            Sign in
+                            Sign Up
                         </Link>
                     </div>
                 </div>

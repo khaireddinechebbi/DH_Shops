@@ -13,7 +13,7 @@ export async function middleware(req: NextRequest) {
 
   // Check if the requested path is in the protected routes and the user is not authenticated
   if (protectedRoutes.some(route => pathname.startsWith(route)) && !token) {
-    const loginUrl = new URL('/login', req.url);
+    const loginUrl = new URL('/', req.url);
     return NextResponse.redirect(loginUrl);
   }
 

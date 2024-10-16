@@ -23,15 +23,6 @@ export default function Navbar() {
           </Link>
         </NavigationMenuItem>
         
-        {/* Shop Link */}
-        <NavigationMenuItem>
-          <Link href="/shop" legacyBehavior passHref>
-            <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Shop
-            </NavigationMenuLink>
-          </Link>
-        </NavigationMenuItem>
-        
         {/* Profile Link */}
         <NavigationMenuItem>
           <Link href="/profile" legacyBehavior passHref>

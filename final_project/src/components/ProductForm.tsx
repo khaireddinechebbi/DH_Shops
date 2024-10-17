@@ -6,6 +6,8 @@ export default function ProductForm() {
     const [priceInCents, setPriceInCents] = useState(0);
     const [image, setImage] = useState<File | null>(null);
     const [description, setDescription] = useState("");
+    const [sizes, setSizes] = useState<string>(""); // Comma-separated sizes
+    const [category, setCategory] = useState("");
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files && e.target.files[0]) {
@@ -21,6 +23,8 @@ export default function ProductForm() {
         formData.append("name", name);
         formData.append("priceInCents", String(priceInCents));
         formData.append("description", description);
+        formData.append("sizes", sizes); // Send sizes as a comma-separated string
+        formData.append("category", category);
         formData.append("ownerId", "YOUR_USER_ID"); // Replace with actual user ID
         if (image) {
             formData.append("image", image); // Assuming backend is set up to handle 'image' as a file
@@ -36,6 +40,8 @@ export default function ProductForm() {
         setPriceInCents(0);
         setDescription("");
         setImage(null);
+        setSizes(""); // Reset sizes
+        setCategory(""); // Reset category
     };
 
     return (
@@ -58,6 +64,20 @@ export default function ProductForm() {
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 placeholder="Product Description"
+                required
+            />
+            <input
+                type="text"
+                value={sizes}
+                onChange={(e) => setSizes(e.target.value)}
+                placeholder="Sizes (comma-separated)"
+                required
+            />
+            <input
+                type="text"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                placeholder="Category"
                 required
             />
             <input

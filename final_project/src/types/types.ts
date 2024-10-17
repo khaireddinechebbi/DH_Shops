@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-
 export interface UserDocument {
     _id: string;
     email: string;
@@ -11,7 +10,6 @@ export interface UserDocument {
     image?: string;
     createdAt: Date;
     updatedAt: Date;
-    products: mongoose.Types.ObjectId[];
     followers: mongoose.Types.ObjectId[];
     following: mongoose.Types.ObjectId[];
 }
@@ -26,18 +24,18 @@ export interface AddressDocument {
 }
 
 export interface ProductDocuments {
-    _id: string
-    name: string
-    sizes: [string]
-    images: [string]
-    category: string
-    purchased: boolean
-    priceInCents: number
-    description: string
-    createAt: Date
-    updateAt: Date
-    ownerId: mongoose.Types.ObjectId
-    owner: UserDocument
+    _id: string;
+    title: string;
+    sizes: string[]; // Changed to string[] for flexibility
+    category: string;
+    purchased: boolean;
+    priceInCents: number;
+    description: string;
+    createAt: Date;
+    updateAt: Date;
+    ownerId: mongoose.Types.ObjectId;
+    owner: UserDocument;
+    images?: string[]; // Add image to store image URL or path
 }
 
 export interface CartItemDocument extends Document {
@@ -53,7 +51,7 @@ export interface CartDocument extends Document {
 }
 
 export interface CategoryDocument {
-    userId: mongoose.Types.ObjectId,
-    user: UserDocument,
-    title: string
+    userId: mongoose.Types.ObjectId;
+    user: UserDocument;
+    title: string;
 }

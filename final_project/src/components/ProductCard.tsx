@@ -7,11 +7,20 @@ interface ProductCardProps {
 
 export default function ProductCard({ product }: ProductCardProps) {
     return (
-        <div className="product-card">
-            <Image src={product.image[0]} alt={product.name} width={150} height={150} />
-            <h3>{product.name}</h3>
-            <p>Price: ${(product.priceInCents / 100).toFixed(2)}</p>
-            <p>Owner: {product.owner?.name}</p>
+        <div className="card bg-base-100 w-96 shadow-xl">
+            <figure>
+                <Image
+                src={product.images[0]}
+                alt={product.title} />
+            </figure>
+            <div className="card-body">
+                <h2 className="card-title">{product.name}</h2>
+                <p>Price: ${(product.priceInCents / 100).toFixed(2)}</p>
+                <p>Owner: {product.owner?.name}</p>
+                <div className="card-actions justify-end">
+                <button className="btn btn-primary">Buy Now</button>
+                </div>
+            </div>
         </div>
     );
 }

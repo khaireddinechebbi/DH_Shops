@@ -9,6 +9,8 @@ import {
 } from "./ui/navigation-menu";
 import { Button } from "./ui/button";
 import { signOut } from "next-auth/react";
+import { IoMdHelpCircleOutline } from "react-icons/io";
+import { TiShoppingCart } from "react-icons/ti";
 
 export default function Navbar() {
   return (
@@ -36,7 +38,7 @@ export default function Navbar() {
         <NavigationMenuItem>
           <Link href="/orders" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Orders
+            <TiShoppingCart size={30} />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>
@@ -45,7 +47,7 @@ export default function Navbar() {
         <NavigationMenuItem>
           <Link href="/contact" legacyBehavior passHref>
             <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-              Contact Us
+            <IoMdHelpCircleOutline size={30} />
             </NavigationMenuLink>
           </Link>
         </NavigationMenuItem>

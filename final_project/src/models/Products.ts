@@ -25,7 +25,7 @@ const ProductSchema = new Schema<ProductDocuments>(
         },
         images: {
             type: [String],  // Store image URLs or paths
-            required: true
+            required: false
         },
         owner: {
             type: mongoose.Types.ObjectId,

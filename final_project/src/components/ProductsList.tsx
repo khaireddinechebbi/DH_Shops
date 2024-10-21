@@ -5,7 +5,7 @@ import React from 'react';
 interface Product {
   _id: string; // Assuming you have an ID field
   title: string;
-  images: string[]; // Array of image URLs
+  images: string[]; // Updated to match the API response
   description: string;
   priceInCents: number; // Price in cents
 }

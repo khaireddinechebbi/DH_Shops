@@ -11,7 +11,7 @@ export async function GET() {
     try {
         const products = await Product.find()
             .populate("owner", "name")
-            .select("name priceInCents description sizes category image owner")
+            .select("title priceInCents description sizes category images owner")
             .exec();
 
         return NextResponse.json({ products });
@@ -79,6 +79,7 @@ export async function POST(request: NextRequest) {
 
         await product.save();
         console.log('Product saved:', product);
+        console.log('Image URLs:', imageUrls);
 
         return NextResponse.json({ success: true, product });
     } catch (error) {

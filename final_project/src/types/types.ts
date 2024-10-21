@@ -1,19 +1,22 @@
 import mongoose from "mongoose";
 
+// Interface for UserDocument
 export interface UserDocument {
     _id: string;
     email: string;
     password: string;
     name: string;
-    address: AddressDocument
+    address: AddressDocument;
     phone?: string;
-    image?: string;
+    image?: string[];
     createdAt: Date;
     updatedAt: Date;
     followers: mongoose.Types.ObjectId[];
     following: mongoose.Types.ObjectId[];
+    products: ProductDocument[];  // Changed to an array to reflect multiple products
 }
 
+// Interface for AddressDocument
 export interface AddressDocument {
     city: string;
     country: string;
@@ -23,33 +26,50 @@ export interface AddressDocument {
     state: string;
 }
 
-export interface ProductDocuments {
+// Interface for ProductDocuments
+export interface ProductDocument {
     _id: string;
     title: string;
-    sizes: string[]; // Changed to string[] for flexibility
+    sizes: string[]; // An array of available sizes for the product
     category: string;
-    purchased: boolean;
     priceInCents: number;
     description: string;
-    createAt: Date;
-    updateAt: Date;
-    ownerId: mongoose.Types.ObjectId;
-    owner: UserDocument;
-    images?: string[]; // Add image to store image URL or path
+    createdAt: Date;
+    updatedAt: Date;
+    owner: UserDocument; // Owner reference
+    images: ImageDocument[]; // Reflecting that images contain both ID and URL
+    likes: mongoose.Types.ObjectId[]; // List of user IDs who liked the product
+    comments: CommentDocument[]; // List of comments on the product
 }
 
-export interface CartItemDocument extends Document {
+// Interface for images inside ProductDocument
+export interface ImageDocument {
+    id: string;
+    url: string;
+}
+
+// Interface for comments on the product
+export interface CommentDocument {
+    user: mongoose.Types.ObjectId; // ID of the user who commented
+    text: string;  // The comment text
+    date: Date;    // Date of the comment
+}
+
+// Interface for CartItemDocument
+export interface CartItemDocument {
     productId: mongoose.Types.ObjectId;
     quantity: number;
     priceInCents: number;
 }
 
-export interface CartDocument extends Document {
+// Interface for CartDocument
+export interface CartDocument {
     userId: mongoose.Types.ObjectId;
     items: CartItemDocument[];
     total_price: number;
 }
 
+// Interface for CategoryDocument
 export interface CategoryDocument {
     userId: mongoose.Types.ObjectId;
     user: UserDocument;

@@ -5,7 +5,6 @@ import { getToken } from 'next-auth/jwt';
 
 export async function middleware(req: NextRequest) {
   const token = await getToken({ req, secret: process.env.AUTH_SECRET });
-    console.log("Token:", token)
   const { pathname } = req.nextUrl;
 
   // List of protected routes

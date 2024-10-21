@@ -1,7 +1,7 @@
-import { ProductDocuments } from "@/types/types";
+import { ProductDocument } from "@/types/types";
 import mongoose, { Schema, model } from "mongoose";
 
-const ProductSchema = new Schema<ProductDocuments>(
+const ProductSchema = new Schema<ProductDocument>(
     {
         title: {
             type: String,
@@ -24,19 +24,41 @@ const ProductSchema = new Schema<ProductDocuments>(
             required: true
         },
         images: {
-            type: [String],  // Store image URLs or paths
-            required: false
+            type: [String], // Array of strings for image URLs
+            required: true,
         },
         owner: {
-            type: mongoose.Types.ObjectId,
+            type: mongoose.Schema.Types.ObjectId,
             ref: "User",
-            required: true
-        }
+            
+        },
+        likes: {
+            type: [mongoose.Schema.Types.ObjectId],
+            ref: "User",
+            default: []
+        },
+        comments: [
+            {
+                user: {
+                    type: mongoose.Schema.Types.ObjectId,
+                    ref: "User",
+                    required: true
+                },
+                text: {
+                    type: String,
+                    required: true
+                },
+                date : {
+                    type: Date,
+                    default: Date.now
+                }
+            }
+        ]
     },
     {
         timestamps: true
     }
 );
 
-const Product = mongoose.models.Product || model<ProductDocuments>("Product", ProductSchema);
+const Product = mongoose.models.Product || model<ProductDocument>("Product", ProductSchema);
 export default Product;

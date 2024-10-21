@@ -23,8 +23,17 @@ const ProductSchema = new Schema<ProductDocument>(
             type: String,
             required: true
         },
+        brand: {
+            type: String,
+            required: true
+        },
+        sex: {
+            type: String,
+            enum: ['men', 'women'],
+            required: true,
+        },
         images: {
-            type: [String], // Array of strings for image URLs
+            type: [String],
             required: true,
         },
         owner: {

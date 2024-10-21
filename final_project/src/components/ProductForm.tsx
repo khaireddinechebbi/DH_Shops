@@ -9,6 +9,8 @@ export default function ProductForm() {
   const [description, setDescription] = useState('');
   const [sizes, setSizes] = useState<string>(''); // Comma-separated sizes
   const [category, setCategory] = useState('');
+  const [sex, setSex] = useState(''); // New state for sex
+  const [brand, setBrand] = useState(''); // New state for brand
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -20,7 +22,6 @@ export default function ProductForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    
     // FormData to handle file uploads
     const formData = new FormData();
     formData.append('title', title);
@@ -28,7 +29,10 @@ export default function ProductForm() {
     formData.append('description', description);
     formData.append('sizes', sizes); // Send sizes as a comma-separated string
     formData.append('category', category);
-     // Replace with actual user ID
+    formData.append('sex', sex); // Append sex to formData
+    formData.append('brand', brand); // Append brand to formData
+    // Replace with actual user ID if needed
+    // formData.append('ownerId', userId); // Uncomment and use actual user ID
 
     // Append each image file to the FormData
     images.forEach((image) => {
@@ -53,6 +57,8 @@ export default function ProductForm() {
       setImages([]); // Reset images
       setSizes('');
       setCategory('');
+      setSex(''); // Reset sex
+      setBrand(''); // Reset brand
     } catch (error) {
       console.error('Error:', error);
     }
@@ -92,6 +98,18 @@ export default function ProductForm() {
         value={category}
         onChange={(e) => setCategory(e.target.value)}
         placeholder="Category"
+        required
+      />
+      <select value={sex} onChange={(e) => setSex(e.target.value)} required>
+        <option value="">Select Sex</option>
+        <option value="men">Men</option>
+        <option value="women">Women</option>
+      </select>
+      <input
+        type="text"
+        value={brand}
+        onChange={(e) => setBrand(e.target.value)}
+        placeholder="Brand"
         required
       />
       <input

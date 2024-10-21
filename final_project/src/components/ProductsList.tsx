@@ -8,6 +8,7 @@ interface Product {
   images: string[]; // Updated to match the API response
   description: string;
   priceInCents: number; // Price in cents
+  brand: string; // Add brand to the product type
 }
 
 // Define the type for the API response
@@ -56,6 +57,7 @@ export default async function ProductsList() {
           />
           <div className="p-4">
             <h2 className="mt-2 text-lg font-medium text-gray-900">{product.title}</h2>
+            <p className="mt-2 text-sm text-gray-500">{product.brand}</p> {/* Display brand */}
             <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
               {product.description}
             </p>

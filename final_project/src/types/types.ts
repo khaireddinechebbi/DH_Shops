@@ -32,6 +32,8 @@ export interface ProductDocument {
     title: string;
     sizes: string[]; // An array of available sizes for the product
     category: string;
+    brand: string;
+    sex: string;
     priceInCents: number;
     description: string;
     createdAt: Date;

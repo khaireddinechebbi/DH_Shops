@@ -4,14 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import { join } from "path";
 
-
-
 export async function GET() {
     await connectDB();
     try {
         const products = await Product.find()
             .populate("owner", "name")
-            .select("title priceInCents description sizes category images owner")
+            .select("title priceInCents description sizes category images owner sex brand") // Include sex and brand
             .exec();
 
         return NextResponse.json({ products });
@@ -33,6 +31,8 @@ export async function POST(request: NextRequest) {
     const sizes = data.get('sizes') as string;
     const category = data.get('category') as string;
     const ownerId = data.get('ownerId') as string;
+    const sex = data.get('sex') as string; // New field for sex
+    const brand = data.get('brand') as string; // New field for brand
 
     // Handling the file uploads
     const files = data.getAll('files'); // Use getAll to get an array of files
@@ -62,6 +62,8 @@ export async function POST(request: NextRequest) {
         sizes,
         category,
         ownerId,
+        sex, // Log the sex
+        brand, // Log the brand
         imageUrls,
     });
 
@@ -74,6 +76,8 @@ export async function POST(request: NextRequest) {
             sizes,
             category,
             owner: ownerId,
+            sex, // Save the sex
+            brand, // Save the brand
             images: imageUrls, // Save the array of image URLs
         });
 

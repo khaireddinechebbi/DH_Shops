@@ -46,13 +46,14 @@ export interface ProductDocument {
 
 // Interface for images inside ProductDocument
 export interface ImageDocument {
-    id: string;
+    _id: string;
     url: string;
 }
 
 // Interface for comments on the product
 export interface CommentDocument {
-    user: mongoose.Types.ObjectId; // ID of the user who commented
+    _id: string;
+    user: mongoose.Schema.Types.ObjectId; // ID of the user who commented
     text: string;  // The comment text
     date: Date;    // Date of the comment
 }

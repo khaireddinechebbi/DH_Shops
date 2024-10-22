@@ -1,8 +1,7 @@
 import Hero from "./Hero";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import ProductCart from "./ProductCard";
-import ProductForm from "./ProductForm";
+import ProductForm from "./profile/ProductForm";
 import SearchBar from "./SearchBar";
 import CustomFilter from "./CustomFilter";
 import UserProducts from "./UserProducts";
@@ -13,11 +12,9 @@ export {
     Hero,
     Navbar,
     Footer,
-    ProductCart,
     ProductForm,
     SearchBar,
     CustomFilter,
     UserProducts,
     HeroSession,
-    
 }

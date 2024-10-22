@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
     const title = data.get('title') as string;
     const priceInCents = Number(data.get('priceInCents'));
     const description = data.get('description') as string;
-    const sizes = data.get('sizes') as string;
+    const sizes = data.getAll('sizes') as string[];
     const category = data.get('category') as string;
     const ownerId = data.get('ownerId') as string;
     const sex = data.get('sex') as string; // New field for sex

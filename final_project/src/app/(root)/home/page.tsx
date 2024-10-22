@@ -1,5 +1,5 @@
 import { HeroSession, Navbar } from "@/components"
-import ProductsList from "@/components/ProductsList"
+import ProductsList from "@/components/home/ProductsList"
 
 
 

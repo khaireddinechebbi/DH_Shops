@@ -5,12 +5,13 @@ import { useState } from 'react';
 export default function ProductForm() {
   const [title, setTitle] = useState('');
   const [priceInCents, setPriceInCents] = useState(0);
-  const [images, setImages] = useState<File[]>([]); // Change to an array of Files
+  const [images, setImages] = useState<File[]>([]);
   const [description, setDescription] = useState('');
-  const [sizes, setSizes] = useState<string>(''); // Comma-separated sizes
+  const [sizes, setSizes] = useState<string[]>([]);
+  const [sizeInput, setSizeInput] = useState('');
   const [category, setCategory] = useState('');
-  const [sex, setSex] = useState(''); // New state for sex
-  const [brand, setBrand] = useState(''); // New state for brand
+  const [sex, setSex] = useState('');
+  const [brand, setBrand] = useState('');
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -27,7 +28,9 @@ export default function ProductForm() {
     formData.append('title', title);
     formData.append('priceInCents', String(priceInCents));
     formData.append('description', description);
-    formData.append('sizes', sizes); // Send sizes as a comma-separated string
+    sizes.forEach((size) => {
+      formData.append('sizes', size);
+    }); // Send sizes as a comma-separated string
     formData.append('category', category);
     formData.append('sex', sex); // Append sex to formData
     formData.append('brand', brand); // Append brand to formData
@@ -50,18 +53,29 @@ export default function ProductForm() {
         throw new Error('Failed to upload product.');
       }
 
-      // Reset form fields after successful upload
       setTitle('');
       setPriceInCents(0);
       setDescription('');
-      setImages([]); // Reset images
-      setSizes('');
+      setImages([]);
+      setSizes([]);
+      setSizeInput('');
       setCategory('');
-      setSex(''); // Reset sex
-      setBrand(''); // Reset brand
+      setSex('');
+      setBrand('');
     } catch (error) {
       console.error('Error:', error);
     }
+  };
+
+  const addSize = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (sizeInput) {
+      setSizes((prevSizes) => [...prevSizes, sizeInput]); // Add size to the array
+      setSizeInput(''); // Clear input after adding
+    }
+  };
+  const deleteSize = (sizeToDelete: string) => {
+    setSizes((prevSizes) => prevSizes.filter((size) => size !== sizeToDelete));
   };
 
   return (
@@ -86,13 +100,25 @@ export default function ProductForm() {
         placeholder="Product Description"
         required
       />
-      <input
-        type="text"
-        value={sizes}
-        onChange={(e) => setSizes(e.target.value)}
-        placeholder="Sizes (comma-separated)"
-        required
-      />
+      <div>
+        <input
+          type="text"
+          value={sizeInput}
+          onChange={(e) => setSizeInput(e.target.value)}
+          placeholder="Add Size"
+        />
+        <button onClick={addSize}>Add Size</button>
+        <ul>
+          {sizes.map((size, index) => (
+            <li key={index}>
+              {size}
+              <button type="button" onClick={() => deleteSize(size)}>
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
       <input
         type="text"
         value={category}

@@ -1,8 +1,8 @@
-import { ProductDocuments } from "@/types/types";
+import { ProductDocument } from "@/types/types";
 import Image from "next/image";
 
 interface ProductCardProps {
-    product: ProductDocuments;
+    product: ProductDocument;
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
@@ -14,7 +14,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                 alt={product.title} />
             </figure>
             <div className="card-body">
-                <h2 className="card-title">{product.name}</h2>
+                <h2 className="card-title">{product.title}</h2>
                 <p>Price: ${(product.priceInCents / 100).toFixed(2)}</p>
                 <p>Owner: {product.owner?.name}</p>
                 <div className="card-actions justify-end">

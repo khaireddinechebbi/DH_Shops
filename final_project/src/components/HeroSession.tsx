@@ -3,7 +3,7 @@
 export default function HeroSession() {
     return (
       <section style={{
-        backgroundImage: 'url("/background.png")',
+        backgroundImage: 'url("/156362.jpg")',
         }}>
         
         <div className="relative overflow-hidden py-24 lg:py-32">

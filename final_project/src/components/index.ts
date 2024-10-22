@@ -8,6 +8,7 @@ import CustomFilter from "./CustomFilter";
 import UserProducts from "./UserProducts";
 import HeroSession from "./HeroSession";
 
+
 export {
     Hero,
     Navbar,
@@ -17,5 +18,6 @@ export {
     SearchBar,
     CustomFilter,
     UserProducts,
-    HeroSession
+    HeroSession,
+    
 }

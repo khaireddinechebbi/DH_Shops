@@ -7,7 +7,7 @@ export default function Hero() {
         <section
             className="relative flex items-center justify-center bg-cover bg-center bg-no-repeat h-screen w-full"
             style={{
-                backgroundImage: 'url("/background.png")',
+                backgroundImage: 'url("/hanger-suits.jpg")',
             }}
         >
             <div className="absolute inset-0 bg-white/75 sm:bg-transparent sm:from-white/95 sm:to-white/25 ltr:sm:bg-gradient-to-r rtl:sm:bg-gradient-to-l"></div>

@@ -44,7 +44,7 @@ export default async function ProductsList() {
   }
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
       {data.products.map((product) => (
         <article key={product._id} className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
           {/* Check if images exist and have at least one entry */}
@@ -61,9 +61,12 @@ export default async function ProductsList() {
             <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
               {product.description}
             </p>
-            <p className="mt-2 text-lg font-semibold text-gray-800">
-              ${(product.priceInCents / 100).toFixed(2)} {/* Convert to dollars */}
+            <div className='flex items-center justify-between'>
+              <p className="mt-2 text-lg font-semibold text-gray-800">
+              ${(product.priceInCents / 100).toFixed(2)}
             </p>
+            <button className="mt-2 bg-white text-blue-700 text-extrabold px-4 py-2 rounded hover:bg-blue-700 hover:text-white transition">Buy</button>
+            </div>
           </div>
         </article>
       ))}

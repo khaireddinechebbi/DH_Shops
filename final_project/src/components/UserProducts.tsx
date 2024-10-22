@@ -1,9 +1,9 @@
 "use client"
 import { useEffect, useState } from "react";
-import { ProductDocuments } from "@/types/types"; // Adjust path as necessary
+import { ProductDocument } from "@/types/types";
 
 export default function UserProducts() {
-    const [products, setProducts] = useState<ProductDocuments[]>([]);
+    const [products, setProducts] = useState<ProductDocument[]>([]);
 
     const fetchUserProducts = async () => {
         try {
@@ -43,7 +43,7 @@ export default function UserProducts() {
             {products.length > 0 ? (
                 products.map((product) => (
                     <div key={product._id}>
-                        <h3>{product.name}</h3>
+                        <h3>{product.title}</h3>
                         <button onClick={() => handleDelete(product._id)}>Delete</button>
                     </div>
                 ))

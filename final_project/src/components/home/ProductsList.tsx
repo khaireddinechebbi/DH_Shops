@@ -12,6 +12,7 @@ interface Product {
   description: string;
   priceInCents: number;
   brand: string;
+  owner: string
 }
 
 // Define the type for the API response
@@ -76,6 +77,9 @@ export default function ProductsList() {
             <p className="mt-2 text-sm text-gray-500">{product.brand}</p> {/* Display brand */}
             <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
               {product.description}
+            </p>
+            <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+              {product.owner}
             </p>
             <div className='flex items-center justify-between'>
               <p className="mt-2 text-lg font-semibold text-gray-800">

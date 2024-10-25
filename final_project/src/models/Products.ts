@@ -36,11 +36,8 @@ const ProductSchema = new Schema<ProductDocument>(
             type: [String],
             required: true,
         },
-        owner: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            
-        },
+          
+        
         likes: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: "User",

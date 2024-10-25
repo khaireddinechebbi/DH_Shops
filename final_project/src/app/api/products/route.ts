@@ -8,7 +8,6 @@ export async function GET() {
     await connectDB();
     try {
         const products = await Product.find()
-            .populate("owner", "name")
             .select("title priceInCents description sizes category images owner sex brand") // Include sex and brand
             .exec();
 
@@ -30,7 +29,7 @@ export async function POST(request: NextRequest) {
     const description = data.get('description') as string;
     const sizes = data.getAll('sizes') as string[];
     const category = data.get('category') as string;
-    const ownerId = data.get('ownerId') as string;
+    
     const sex = data.get('sex') as string; // New field for sex
     const brand = data.get('brand') as string; // New field for brand
 
@@ -61,7 +60,7 @@ export async function POST(request: NextRequest) {
         description,
         sizes,
         category,
-        ownerId,
+        
         sex, // Log the sex
         brand, // Log the brand
         imageUrls,
@@ -75,7 +74,7 @@ export async function POST(request: NextRequest) {
             description,
             sizes,
             category,
-            owner: ownerId,
+            
             sex, // Save the sex
             brand, // Save the brand
             images: imageUrls, // Save the array of image URLs

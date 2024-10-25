@@ -66,26 +66,32 @@ export const authOptions: NextAuthOptions = {
         secret: process.env.AUTH_SECRET,
     },
     callbacks: {
-        async jwt({ token, user }) {
-            
+        async jwt({ token, user, account }) {
             if (user) {
-                token.id = user._id ? user._id.toString() : undefined;
+                token.id = user._id ? user._id.toString() : undefined; // Store user ID
+                token.sub = user.sub || (account && account.providerAccountId) || token.sub; // Set sub from user or account
             }
             return token;
         },
         async session({ session, token }) {
-            
-            if (token && token.id) {
+            if (token) {
                 session.user = {
                     ...session.user,
-                    id: token.id,
+                    id: token.id, // Add user ID to session
+                    sub: token.sub, // Add sub to session
                 };
             }
             return session;
         },
-        async redirect({ url, baseUrl }) {
-            return `${baseUrl}/home`;
+        async redirect({ url, baseUrl, token }) {
+            // Check if token is defined and has sub
+            if (token && token.sub) {
+                return `${baseUrl}/home/${token.sub}`;
+            }
+            // Handle case when token is not available (e.g., during logout)
+            return `${baseUrl}/home`; // Fallback to home
         },
     },
+    
     debug: true
 };

@@ -38,7 +38,7 @@ export interface ProductDocument {
     description: string;
     createdAt: Date;
     updatedAt: Date;
-    owner: UserDocument; // Owner reference
+    
     images: ImageDocument[]; // Reflecting that images contain both ID and URL
     likes: mongoose.Types.ObjectId[]; // List of user IDs who liked the product
     comments: CommentDocument[]; // List of comments on the product

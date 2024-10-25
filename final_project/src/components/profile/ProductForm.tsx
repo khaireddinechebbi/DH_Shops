@@ -79,12 +79,18 @@ export default function ProductForm() {
   };
 
   return (
-    <form onSubmit={handleSubmit} encType="multipart/form-data">
+    <form 
+    onSubmit={handleSubmit} 
+    encType="multipart/form-data"
+    className="space-y-6 p-6 bg-white shadow-md rounded-md max-w-3xl mx-auto"
+    >
+      <h2 className="text-2xl font-semibold text-gray-800 mb-4">Add a New Product</h2>
       <input
         type="text"
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Product title"
+        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
         required
       />
       <input
@@ -92,12 +98,14 @@ export default function ProductForm() {
         value={priceInCents}
         onChange={(e) => setPriceInCents(Number(e.target.value))}
         placeholder="Price (cents)"
+        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
         required
       />
       <textarea
         value={description}
         onChange={(e) => setDescription(e.target.value)}
         placeholder="Product Description"
+        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
         required
       />
       <div>
@@ -105,14 +113,21 @@ export default function ProductForm() {
           type="text"
           value={sizeInput}
           onChange={(e) => setSizeInput(e.target.value)}
-          placeholder="Add Size"
+          placeholder="Add"
+          className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
         />
-        <button onClick={addSize}>Add Size</button>
-        <ul>
+        <button 
+        onClick={addSize}
+        className="p-3 bg-transparent font-semibold text-green-600 rounded-md hover:bg-green-600 hover:text-white transition"
+        >
+          Add Size
+        </button>
+        <ul className="space-y-2">
           {sizes.map((size, index) => (
             <li key={index}>
               {size}
-              <button type="button" onClick={() => deleteSize(size)}>
+              <button type="button" onClick={() => deleteSize(size)}
+                className="text-red-600 font-semibold bg-transparent hover:text-white hover:bg-red-600">
                 Delete
               </button>
             </li>
@@ -124,9 +139,15 @@ export default function ProductForm() {
         value={category}
         onChange={(e) => setCategory(e.target.value)}
         placeholder="Category"
+        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
         required
       />
-      <select value={sex} onChange={(e) => setSex(e.target.value)} required>
+      <select 
+      value={sex} 
+      onChange={(e) => setSex(e.target.value)} 
+      required
+      className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
+      >
         <option value="">Select Sex</option>
         <option value="men">Men</option>
         <option value="women">Women</option>
@@ -136,16 +157,22 @@ export default function ProductForm() {
         value={brand}
         onChange={(e) => setBrand(e.target.value)}
         placeholder="Brand"
+        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
         required
       />
       <input
         type="file"
         accept="image/*"
         onChange={handleImageChange}
-        multiple // Allow multiple file selection
+        multiple
+        className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400"
         required
       />
-      <button type="submit">Add Product</button>
+      <button type="submit"
+      className="w-full p-3 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition"
+      >
+        Add Product
+      </button>
     </form>
   );
 }

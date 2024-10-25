@@ -53,9 +53,11 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-xl p-6 relative">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-xl max-h-[90vh] p-6 relative overflow-y-auto">
         {/* Close Button */}
-        <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
+        <button 
+          onClick={onClose} 
+          className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full font-bold text-red-600 bg-transparent hover:bg-red-600 hover:text-white z-10">
           ✕
         </button>
 
@@ -67,49 +69,51 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
             src={product.images && product.images.length > 0 ? product.images[currentImageIndex] : '/fallback-image.jpg'}
             width={300}
             height={300}
-            className="h-56 w-full rounded-xl object-cover shadow-xl transition"
+            className="h-65 w-full rounded-xl object-cover shadow-xl transition"
           />
 
           {/* Left/Right Navigation Buttons */}
           <button
             onClick={handlePrevious}
-            className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600"
+            className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 hover:-translate-x-2"
           >
-            ←
+            &lt;
           </button>
           <button
             onClick={handleNext}
-            className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600"
+            className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 hover:translate-x-2"
           >
-            →
+            &gt;
           </button>
         </div>
 
+        {/* Scrollable Product Information */}
         <div className="mt-4">
-            <label htmlFor="size" className="block text-sm font-medium text-gray-700">Size</label>
-            <select
-              id="size"
-              value={selectedSize || ''}
-              onChange={(e) => setSelectedSize(e.target.value)}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-            >
-              <option value="">Select a size</option>
-              {product.sizes.map((size) => (
-                <option key={size} value={size}>{size}</option>
-              ))}
-            </select>
+          <label htmlFor="size" className="block text-sm font-medium text-gray-700">Size</label>
+          <select
+            id="size"
+            value={selectedSize || ''}
+            onChange={(e) => setSelectedSize(e.target.value)}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          >
+            <option value="">Select a size</option>
+            {product.sizes.map((size) => (
+              <option key={size} value={size}>{size}</option>
+            ))}
+          </select>
         </div>
+
         {/* Quantity Selector */}
         <div className="mt-4">
-            <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
-            <input
-              type="number"
-              id="quantity"
-              value={quantity}
-              onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-              min={1}
-            />
+          <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
+          <input
+            type="number"
+            id="quantity"
+            value={quantity}
+            onChange={(e) => setQuantity(parseInt(e.target.value, 10))}
+            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            min={1}
+          />
         </div>
 
         {/* Product Info */}
@@ -117,18 +121,18 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
           <h2 className="text-2xl font-semibold">{product.title}</h2>
           <p className="text-gray-500">{product.brand}</p>
           <p className="text-lg font-bold mt-2">${(product.priceInCents / 100).toFixed(2)}</p>
-          
+
           {/* Category & Sex */}
           <p className="mt-2"><strong>Category:</strong> {product.category}</p>
           <p className="mt-2"><strong>Sex:</strong> {product.sex}</p>
-          
+
           {/* Description */}
           <p className="text-gray-700 mt-4">{product.description}</p>
-
 
           <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Buy Now</button>
         </div>
       </div>
     </div>
+
   );
 };

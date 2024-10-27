@@ -21,6 +21,7 @@ export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             name: "Sign in",
+            
             id: "credentials",
             credentials: {
                 email: { label: "Email", type: "email", placeholder: "example@example.com" },
@@ -43,7 +44,10 @@ export const authOptions: NextAuthOptions = {
                     }
 
                     console.log("User authenticated:", user.email);
-                    return user;
+                    return {
+                        ...user.toObject(),
+                        _id: user._id.toString(), // Ensure _id is a string
+                    };
                 } catch (error) {
                     console.error("Error during authorization:", error);
                     throw new Error("Authorization failed");
@@ -68,7 +72,7 @@ export const authOptions: NextAuthOptions = {
     callbacks: {
         async jwt({ token, user, account }) {
             if (user) {
-                token.id = user._id ? user._id.toString() : undefined; // Store user ID
+                token.id = user._id ? user._id.toString() : token.id; // Store user ID
                 token.sub = user.sub || (account && account.providerAccountId) || token.sub; // Set sub from user or account
             }
             return token;

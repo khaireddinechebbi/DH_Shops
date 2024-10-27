@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { CommentDocument, ImageDocument, UserDocument } from '@/types/types';

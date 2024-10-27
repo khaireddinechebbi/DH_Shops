@@ -1,8 +1,93 @@
 import Product from "@/models/Products";
+import User from "@/models/User";
 import { connectDB } from "@/lib/mongodb";
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile } from "fs/promises";
 import { join } from "path";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+export async function POST(request: NextRequest) {
+    await connectDB();
+    const session = await getServerSession(authOptions);
+    if (!session) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    try {
+        // Retrieve user from the database using session email or ID
+        const user = await User.findOne({ email: session.user.email });
+        if (!user) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        const data = await request.formData();
+
+        // Extracting the product fields
+        const title = data.get("title") as string;
+        const priceInCents = Number(data.get("priceInCents"));
+        const description = data.get("description") as string;
+        const sizes = data.getAll("sizes") as string[];
+        const category = data.get("category") as string;
+        const sex = data.get("sex") as string;
+        const brand = data.get("brand") as string;
+        
+        // Handling file uploads
+        const files = data.getAll("files");
+        const imageUrls = [];
+
+        for (const file of files) {
+            if (file instanceof File) {
+                const bytes = await file.arrayBuffer();
+                const buffer = Buffer.from(bytes);
+                const fileName = `${Date.now()}-${file.name}`;
+                const path = join(process.cwd(), "public", "uploads", fileName);
+
+                // Write file to the public folder
+                await writeFile(path, buffer);
+                imageUrls.push(`/uploads/${fileName}`);
+            }
+        }
+
+        // Create and save the product
+        const product = new Product({
+            title,
+            priceInCents,
+            description,
+            sizes,
+            category,
+            ownerEmail: session.user.email,
+            ownerName: session.user.name,
+            sex,
+            brand,
+            images: imageUrls,
+        });
+        console.log("Product data before saving:", {
+            title,
+            priceInCents,
+            description,
+            sizes,
+            category,
+            ownerEmail: session.user.email,  // Should log the email here
+            ownerName: session.user.name,
+            sex,
+            brand,
+            images: imageUrls,
+        });
+        await product.save();
+
+        // Update the user's product list
+        user.products.push(product._id);
+        await user.save();
+
+        return NextResponse.json({ success: true, product });
+    } catch (error) {
+        console.error("Error creating product:", error);
+        return NextResponse.json({ error: "Failed to create product" }, { status: 500 });
+    }
+}
+
+
 
 export async function GET() {
     await connectDB();
@@ -15,78 +100,5 @@ export async function GET() {
     } catch (error) {
         console.error("Error fetching products:", error);
         return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });
-    }
-}
-
-// POST: Create a new product
-export async function POST(request: NextRequest) {
-    await connectDB();
-    const data = await request.formData();
-
-    // Extracting the product fields
-    const title = data.get('title') as string;
-    const priceInCents = Number(data.get('priceInCents'));
-    const description = data.get('description') as string;
-    const sizes = data.getAll('sizes') as string[];
-    const category = data.get('category') as string;
-    
-    const sex = data.get('sex') as string; // New field for sex
-    const brand = data.get('brand') as string; // New field for brand
-
-    // Handling the file uploads
-    const files = data.getAll('files'); // Use getAll to get an array of files
-    const imageUrls = []; // Array to store image URLs
-
-    // Process each file
-    for (const file of files) {
-        if (file instanceof File) {
-            const bytes = await file.arrayBuffer();
-            const buffer = Buffer.from(bytes);
-            const fileName = `${Date.now()}-${file.name}`; // Generate unique filename
-            const path = join(process.cwd(), 'public', 'uploads', fileName); // Save in public/uploads/
-            
-            // Write file to the public folder
-            await writeFile(path, buffer);
-            
-            // Generate the relative URL to the image
-            imageUrls.push(`/uploads/${fileName}`); // Add the image URL to the array
-        }
-    }
-
-    // Debugging logs
-    console.log('Product details:', {
-        title,
-        priceInCents,
-        description,
-        sizes,
-        category,
-        
-        sex, // Log the sex
-        brand, // Log the brand
-        imageUrls,
-    });
-
-    try {
-        // Create a new product and save it in the database
-        const product = new Product({
-            title,
-            priceInCents,
-            description,
-            sizes,
-            category,
-            
-            sex, // Save the sex
-            brand, // Save the brand
-            images: imageUrls, // Save the array of image URLs
-        });
-
-        await product.save();
-        console.log('Product saved:', product);
-        console.log('Image URLs:', imageUrls);
-
-        return NextResponse.json({ success: true, product });
-    } catch (error) {
-        console.error('Error creating product:', error);
-        return NextResponse.json({ error: 'Failed to create product' }, { status: 500 });
     }
 }

@@ -6,6 +6,9 @@ import CustomFilter from "./CustomFilter";
 import UserProducts from "./UserProducts";
 import HeroSession from "./HeroSession";
 import Navbar from "./NavigationBar";
+import Cover from "./profile/Cover";
+import About from "./profile/About";
+import Posts from "./profile/Posts";
 
 
 export {
@@ -17,4 +20,7 @@ export {
     CustomFilter,
     UserProducts,
     HeroSession,
+    Cover,
+    About,
+    Posts
 }

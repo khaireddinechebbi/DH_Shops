@@ -38,7 +38,8 @@ export interface ProductDocument {
     description: string;
     createdAt: Date;
     updatedAt: Date;
-    
+    ownerEmail: string;
+    ownerName: string; // Owner reference
     images: ImageDocument[]; // Reflecting that images contain both ID and URL
     likes: mongoose.Types.ObjectId[]; // List of user IDs who liked the product
     comments: CommentDocument[]; // List of comments on the product
@@ -62,12 +63,14 @@ export interface CommentDocument {
 export interface CartItemDocument {
     productId: mongoose.Types.ObjectId;
     quantity: number;
+    size: string;
     priceInCents: number;
 }
 
 // Interface for CartDocument
 export interface CartDocument {
     userId: mongoose.Types.ObjectId;
+    address: AddressDocument;
     items: CartItemDocument[];
     total_price: number;
 }

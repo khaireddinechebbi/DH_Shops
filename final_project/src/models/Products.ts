@@ -36,7 +36,14 @@ const ProductSchema = new Schema<ProductDocument>(
             type: [String],
             required: true,
         },
-          
+        ownerEmail: {
+            type: String,
+            required: true
+        },
+        ownerName: {
+            type: String,
+            required: true
+        },
         
         likes: {
             type: [mongoose.Schema.Types.ObjectId],

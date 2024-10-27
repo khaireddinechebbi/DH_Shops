@@ -25,7 +25,7 @@ const UserSchema = new Schema<UserDocument>(
             required: false,
         },
         image: {
-            type: String,
+            type: [String],
             required: false,
         },
         address: {

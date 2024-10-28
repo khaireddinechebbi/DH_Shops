@@ -62,18 +62,6 @@ export async function POST(request: NextRequest) {
             brand,
             images: imageUrls,
         });
-        console.log("Product data before saving:", {
-            title,
-            priceInCents,
-            description,
-            sizes,
-            category,
-            ownerEmail: session.user.email,  // Should log the email here
-            ownerName: session.user.name,
-            sex,
-            brand,
-            images: imageUrls,
-        });
         await product.save();
 
         // Update the user's product list

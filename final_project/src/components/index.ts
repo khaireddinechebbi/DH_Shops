@@ -8,7 +8,9 @@ import HeroSession from "./HeroSession";
 import Navbar from "./NavigationBar";
 import Cover from "./profile/Cover";
 import About from "./profile/About";
-import Posts from "./profile/Posts";
+import UserProductsList from "./profile/UserProductsList";
+import ProductUpdate from "./profile/ProductUpdate";
+
 
 
 export {
@@ -22,5 +24,6 @@ export {
     HeroSession,
     Cover,
     About,
-    Posts
+    UserProductsList,
+    ProductUpdate
 }

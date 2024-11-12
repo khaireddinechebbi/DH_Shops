@@ -28,9 +28,9 @@ export default function Navbar() {
   }, []);
 
   // Construct the user profile URL
-  const profileUrl = session?.user ? `/profile/${session.user.sub}` : "/profile";
-  const ordersUrl = session?.user ? `/orders/${session.user.sub}` : "/orders";
-  const contactUrl = session?.user ? `/contact/${session.user.sub}` : "/contact";
+  const profileUrl = session?.user ? `/profile/${session.user.id}` : "/profile";
+  const ordersUrl = session?.user ? `/orders/${session.user.id}` : "/orders";
+  const contactUrl = session?.user ? `/contact/${session.user.id}` : "/contact";
 
   return (
     <nav className="relative p-5 bg-white shadow-md">

@@ -8,7 +8,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     await connectDB();
 
     try {
-        const product = await Product.findById(id).populate("owner", "name");
+        const product = await Product.findById(id);
         
         if (!product) {
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
@@ -24,17 +24,17 @@ export async function GET(request: Request, { params }: { params: { id: string }
 // PUT: Update a product by ID
 export async function PUT(request: Request, { params }: { params: { id: string } }) {
     const { id } = params;
-    const body = await request.json();
     await connectDB();
 
     try {
-        const product = await Product.findByIdAndUpdate(id, body, { new: true });
+        const updateData = await request.json();
+        const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
 
-        if (!product) {
+        if (!updatedProduct) {
             return NextResponse.json({ error: "Product not found" }, { status: 404 });
         }
 
-        return NextResponse.json(product);
+        return NextResponse.json(updatedProduct);
     } catch (error) {
         console.error("Error updating product:", error);
         return NextResponse.json({ error: "Failed to update product" }, { status: 500 });

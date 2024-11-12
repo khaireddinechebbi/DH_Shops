@@ -8,12 +8,11 @@ export async function PUT(req: Request) {
     await connectDB();
 
     const session = await getServerSession(authOptions);
-    console.log(session);
     if (!session) {
         return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { phone, address, userEmail } = await req.json();
+    const { name, bio, address, phone, userEmail } = await req.json();
 
     try {
         // Find user by email
@@ -23,8 +22,26 @@ export async function PUT(req: Request) {
         }
 
         // Update fields if new values are provided
+        user.name = name || user.name;
+        user.bio = bio || user.bio;
         user.phone = phone || user.phone;
-        user.address = address || user.address;
+
+        // Initialize user.address if it doesn't exist
+        if (!user.address) {
+            user.address = {};
+        }
+
+        // Update address fields if provided
+        if (address) {
+            user.address = {
+                city: address.city || user.address.city,
+                country: address.country || user.address.country,
+                line1: address.line1 || user.address.line1,
+                line2: address.line2 || user.address.line2,
+                postal_code: address.postal_code || user.address.postal_code,
+                state: address.state || user.address.state,
+            };
+        }
 
         await user.save();
 

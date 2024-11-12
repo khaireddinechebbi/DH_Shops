@@ -30,20 +30,18 @@ export default function ProductForm() {
     formData.append('description', description);
     sizes.forEach((size) => {
       formData.append('sizes', size);
-    }); // Send sizes as a comma-separated string
+    });
     formData.append('category', category);
-    formData.append('sex', sex); // Append sex to formData
-    formData.append('brand', brand); // Append brand to formData
-    // Replace with actual user ID if needed
-    // formData.append('ownerId', userId); // Uncomment and use actual user ID
+    formData.append('sex', sex);
+    formData.append('brand', brand);
 
-    // Append each image file to the FormData
+    
     images.forEach((image) => {
-      formData.append('files', image); // Use 'files' to match the backend's field
+      formData.append('files', image);
     });
 
     try {
-      const res = await fetch('/api/products', {
+      const res = await fetch('http://localhost:3000/api/products', {
         method: 'POST',
         body: formData,
       });

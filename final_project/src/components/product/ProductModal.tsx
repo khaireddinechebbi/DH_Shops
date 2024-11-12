@@ -1,38 +1,36 @@
-"use client"
+"use client";
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { CommentDocument, ImageDocument, UserDocument } from '@/types/types';
+import { CommentDocument, ImageDocument } from '@/types/types';
+import { useCart } from '@/context/CartContext';
 
-
-// Update the Product type to match ProductDocument
+// Define Product type
 interface Product {
   _id: string;
   title: string;
-  sizes: string[]; // Available sizes
+  sizes: string[];
   category: string;
   brand: string;
   sex: string;
   priceInCents: number;
   description: string;
-  createdAt: Date;
-  updatedAt: Date;
-  owner: UserDocument; // Owner reference
-  images: ImageDocument[]; // Images
-  likes: string[]; // List of user IDs who liked the product
-  comments: CommentDocument[]; // List of comments on the product
+  ownerName: string;
+  images: ImageDocument[];
+  likes: string[];
+  comments: CommentDocument[];
 }
 
 interface ProductModalProps {
-  product: Product | null; // The product to display in the modal
-  onClose: () => void; // Callback to close the modal
+  product: Product | null;
+  onClose: () => void;
 }
 
 export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
-    const [currentImageIndex, setCurrentImageIndex] = useState(0);
-    const [selectedSize, setSelectedSize] = useState<string | null>(null);
-    const [quantity, setQuantity] = useState<number>(1);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [quantity, setQuantity] = useState<number>(1);
+  const { addToCart } = useCart();
 
-  // Handle next image
   const handleNext = () => {
     if (product && product.images.length > 0) {
       setCurrentImageIndex((prevIndex) =>
@@ -41,7 +39,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
     }
   };
 
-  // Handle previous image
   const handlePrevious = () => {
     if (product && product.images.length > 0) {
       setCurrentImageIndex((prevIndex) =>
@@ -49,22 +46,42 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
       );
     }
   };
-  
-    if (!product) return null;
+
+  const handleAddToCart = () => {
+    if (!selectedSize) {
+      alert("Please select a size.");
+      return;
+    }
+
+    if (!product) {
+      alert("Product not found.");
+      return;
+    }
+
+    addToCart({
+      productId: product._id,
+      title: product.title,
+      priceInCents: product.priceInCents,
+      quantity,
+      size: selectedSize,
+    });
+
+    alert("Product added to cart!");
+    onClose();
+  };
+
+  if (!product) return null;
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-20">
       <div className="bg-white rounded-lg shadow-lg w-full max-w-xl max-h-[90vh] p-6 relative overflow-y-auto">
-        {/* Close Button */}
         <button 
           onClick={onClose} 
           className="absolute top-2 right-2 w-8 h-8 flex items-center justify-center rounded-full font-bold text-red-600 bg-transparent hover:bg-red-600 hover:text-white z-10">
           ✕
         </button>
 
-        {/* Product Images */}
         <div className="relative">
-          {/* Display the current image */}
           <Image
             alt={product.title}
             src={product.images && product.images.length > 0 ? product.images[currentImageIndex] : '/fallback-image.jpg'}
@@ -73,7 +90,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
             className="h-65 w-full rounded-xl object-cover shadow-xl transition"
           />
 
-          {/* Left/Right Navigation Buttons */}
           <button
             onClick={handlePrevious}
             className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-gray-800 text-white p-2 rounded-full hover:bg-gray-600 hover:-translate-x-2"
@@ -88,7 +104,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
           </button>
         </div>
 
-        {/* Scrollable Product Information */}
         <div className="mt-4">
           <label htmlFor="size" className="block text-sm font-medium text-gray-700">Size</label>
           <select
@@ -104,7 +119,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
           </select>
         </div>
 
-        {/* Quantity Selector */}
         <div className="mt-4">
           <label htmlFor="quantity" className="block text-sm font-medium text-gray-700">Quantity</label>
           <input
@@ -117,23 +131,25 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
           />
         </div>
 
-        {/* Product Info */}
         <div className="mt-4">
           <h2 className="text-2xl font-semibold">{product.title}</h2>
-          <p className="text-gray-500">{product.brand}</p>
+          <h3 className="text-gray-500">{product.brand}</h3>
+          <p className="mt-2 text-sm text-gray-500">
+            {product.ownerName}
+          </p>
           <p className="text-lg font-bold mt-2">${(product.priceInCents / 100).toFixed(2)}</p>
-
-          {/* Category & Sex */}
           <p className="mt-2"><strong>Category:</strong> {product.category}</p>
           <p className="mt-2"><strong>Sex:</strong> {product.sex}</p>
-
-          {/* Description */}
           <p className="text-gray-700 mt-4">{product.description}</p>
 
-          <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Buy Now</button>
+          <button 
+            onClick={handleAddToCart}
+            className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition"
+          >
+            Add to Cart
+          </button>
         </div>
       </div>
     </div>
-
   );
 };

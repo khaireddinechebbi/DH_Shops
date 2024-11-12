@@ -6,6 +6,7 @@ export interface UserDocument {
     email: string;
     password: string;
     name: string;
+    bio: string
     address: AddressDocument;
     phone?: string;
     image?: string[];
@@ -13,7 +14,8 @@ export interface UserDocument {
     updatedAt: Date;
     followers: mongoose.Types.ObjectId[];
     following: mongoose.Types.ObjectId[];
-    products: ProductDocument[];  // Changed to an array to reflect multiple products
+    products: ProductDocument[];
+    orders: CartDocument[]
 }
 
 // Interface for AddressDocument
@@ -60,20 +62,19 @@ export interface CommentDocument {
 }
 
 // Interface for CartItemDocument
-export interface CartItemDocument {
-    productId: mongoose.Types.ObjectId;
+export interface CartItem {
+    productId: string;
     quantity: number;
     size: string;
-    priceInCents: number;
 }
-
-// Interface for CartDocument
-export interface CartDocument {
-    userId: mongoose.Types.ObjectId;
-    address: AddressDocument;
-    items: CartItemDocument[];
-    total_price: number;
+  
+export interface CartDocument extends Document {
+    userEmail: string;
+    address: string;
+    items: CartItem[];
+    totalPrice: number;
 }
+  
 
 // Interface for CategoryDocument
 export interface CategoryDocument {

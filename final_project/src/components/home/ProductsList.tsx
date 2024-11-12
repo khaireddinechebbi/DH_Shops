@@ -12,7 +12,7 @@ interface Product {
   description: string;
   priceInCents: number;
   brand: string;
-  owner: string
+  ownerName: string
 }
 
 // Define the type for the API response
@@ -74,13 +74,17 @@ export default function ProductsList() {
           />
           <div className="p-4">
             <h2 className="mt-2 text-lg font-medium text-gray-900">{product.title}</h2>
-            <p className="mt-2 text-sm text-gray-500">{product.brand}</p> {/* Display brand */}
+            <h3 className="mt-2 text-sm font-bold text-gray-500">{product.brand}</h3>
+            <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+              {product.ownerName}
+            </p>
             <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
               {product.description}
             </p>
             <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
-              {product.owner}
+              {product.ownerName}
             </p>
+            
             <div className='flex items-center justify-between'>
               <p className="mt-2 text-lg font-semibold text-gray-800">
                 ${(product.priceInCents / 100).toFixed(2)}

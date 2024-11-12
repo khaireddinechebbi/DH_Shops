@@ -1,5 +1,14 @@
 import { UserDocument } from "@/types/types";
-import mongoose, { Schema, model } from "mongoose";
+import mongoose, { model, Schema } from "mongoose";
+
+const AddressSchema = new Schema({
+    city: String,
+    country: String,
+    line1: String,
+    line2: String,
+    postal_code: String,
+    state: String,
+}, { _id: false });
 
 const UserSchema = new Schema<UserDocument>(
     {
@@ -20,6 +29,10 @@ const UserSchema = new Schema<UserDocument>(
             type: String,
             required: [true, "Name is required"],
         },
+        bio: {
+            type: String,
+            required: false,
+        },
         phone: {
             type: String,
             required: false,
@@ -29,14 +42,20 @@ const UserSchema = new Schema<UserDocument>(
             required: false,
         },
         address: {
-            type: String,
-            required: false
+            type: AddressSchema,
+            required: false,
         },
         products: [
             {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Product",
             },
+        ],
+        orders: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Order"
+            }
         ],
         followers: [
             {

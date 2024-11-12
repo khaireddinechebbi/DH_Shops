@@ -1,9 +1,10 @@
 "use client"
-import { About, Cover, Navbar, Posts, ProductForm } from "@/components";
+import { About, Cover, Navbar, UserProductsList, ProductForm } from "@/components";
 import Link from "next/link";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-
+import { CiSettings } from "react-icons/ci";
+import { MdAddBusiness } from "react-icons/md";
 export default function Profile() {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -16,23 +17,25 @@ export default function Profile() {
     <>
       <Navbar />
       
-      <div>
+      <div className="p-4">
         <div>
           <Cover/>
         </div>
         <div>
-          <About/>
-          <Link href={settingUrl}>Setting</Link>
+          <Link href={settingUrl} className="flex justify-end"><CiSettings size={20}/></Link>
+          <About/> 
         </div>
         <div className="p-6">
-
-          {/* Button to open the modal */}
-          <button 
-            onClick={toggleModal} 
-            className="p-3 bg-indigo-500 text-white rounded-md hover:bg-indigo-600 transition"
-          >
-            Add New Product
-          </button>
+          <div className="flex justify-end">
+            {/* Button to open the modal */}
+            <button 
+              onClick={toggleModal} 
+              className="p-3 bg-white text-green-700 rounded-full hover:bg-green-700 hover:text-white transition"
+            >
+              <MdAddBusiness size={25} />
+            </button>
+          </div>
+          
 
           {/* Modal for ProductForm */}
           {isModalOpen && (
@@ -53,7 +56,7 @@ export default function Profile() {
           )}
         </div>
         <div>
-          <Posts/>
+          <UserProductsList/>
         </div>
       </div>
           </>

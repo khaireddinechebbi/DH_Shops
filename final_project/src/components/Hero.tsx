@@ -14,30 +14,28 @@ export default function Hero() {
 
             <div className="relative mx-auto max-w-screen-xl px-4 py-32 sm:px-6 lg:flex lg:h-screen lg:items-center lg:px-8">
                 <div className="max-w-xl text-center ltr:sm:text-left rtl:sm:text-right">
-                    <h1 className="text-3xl font-extrabold sm:text-5xl">
-                        Let us find your
-                        <strong className="block font-extrabold text-rose-700"> Forever Home. </strong>
+                    <h1 className="text-3xl font-extrabold sm:text-5xl text-white">
+                        Discover Unique Designs
+                        <strong className="block font-extrabold text-rose-700"> Made Just For You. </strong>
                     </h1>
 
-                    <p className="mt-4 max-w-lg sm:text-xl/relaxed">
-                        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nesciunt illo tenetur fuga ducimus
-                        numquam ea!
-                    </p>
-                    <div>
-                        <GoogleButton/>
-                        <FacebookButton/>
+                    
+
+                    <div className="mt-4 flex flex-col sm:flex-row gap-4">
+                        <GoogleButton />
+                        <FacebookButton />
                     </div>
 
                     <div className="mt-8 flex flex-wrap gap-4 text-center">
                         <Link
-                            className="block w-full rounded border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent focus:outline-none focus:ring active:text-opacity-75 sm:w-auto"
+                            className="block w-full rounded border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white hover:text-blue-600 hover:bg-transparent focus:outline-none focus:ring active:text-opacity-75 sm:w-auto"
                             href="/login"
                         >
                             Login
                         </Link>
 
                         <Link
-                            className="block w-full rounded border border-blue-600 px-12 py-3 text-sm font-medium text-white hover:bg-blue-600 focus:outline-none focus:ring active:bg-blue-500 sm:w-auto"
+                            className="block w-full rounded border border-blue-600 px-12 py-3 text-sm font-medium text-blue-600 hover:bg-blue-600 hover:text-white focus:outline-none focus:ring active:bg-blue-500 sm:w-auto"
                             href="/signup"
                         >
                             Sign Up

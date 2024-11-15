@@ -1,5 +1,5 @@
 "use client"
-import { About, Cover, Navbar, UserProductsList, ProductForm } from "@/components";
+import { About, Cover, Navbar, UserProductsList, ProductForm, Footer } from "@/components";
 import Link from "next/link";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -12,7 +12,7 @@ export default function Profile() {
     setIsModalOpen(!isModalOpen);
   };
   const { data: session } = useSession();
-  const settingUrl = session?.user ? `/profile/${session.user.sub}/setting` : "/setting";
+  const settingUrl = session?.user ? `/profile/${session.user.id}/setting` : "/setting";
   return (
     <>
       <Navbar />
@@ -59,6 +59,7 @@ export default function Profile() {
           <UserProductsList/>
         </div>
       </div>
-          </>
+      <Footer/>
+    </>
   );
 }

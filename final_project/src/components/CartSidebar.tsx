@@ -20,25 +20,38 @@ export const CartSidebar: React.FC = () => {
       alert("Your cart is empty.");
       return;
     }
-
+  
     if (!orderAddress) {
       alert("Please enter your shipping address.");
       return;
     }
-
+  
+    // Prepare items with the expected format
+    const formattedItems = cartItems.map((item) => ({
+      productId: item.productId,
+      title: item.title,
+      size: item.size,
+      quantity: item.quantity,
+      price: item.priceInCents, // Convert to dollars or use as required
+    }));
+  
     try {
       const response = await fetch("http://localhost:3000/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ items: cartItems, address: orderAddress, totalPrice: totalPrice }),
+        body: JSON.stringify({
+          items: formattedItems,
+          address: orderAddress,
+          totalPrice: totalPrice / 100, // Ensure consistent units
+        }),
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to submit order");
       }
-
+  
       alert("Order submitted successfully!");
       clearCart();
       setOrderAddress(""); // Clear the address after successful submission
@@ -47,9 +60,9 @@ export const CartSidebar: React.FC = () => {
       alert("An error occurred while submitting the order.");
     }
   };
-
+  
   return (
-    <div className="fixed right-0 top-0 w-80 h-full bg-white shadow-lg p-4 overflow-y-auto">
+    <div className="fixed right-0 w-80 h-full bg-white shadow-lg p-4 overflow-y-auto">
       <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
 
       {/* Cart Items */}

@@ -1,12 +1,12 @@
 "use client";
-import Image from "next/image";
 import { useState, useEffect } from "react";
 
 // Define the types for Order and Item
 interface Item {
-  name?: string;
+  title?: string;
   quantity?: number;
   price?: number;
+  size?: string;
   imageUrl?: string; // Assuming each item has an optional image URL
 }
 
@@ -89,7 +89,7 @@ export default function OrdersList() {
                   Total Items: {order.items ? order.items.length : 0}
                 </p>
                 <p className="text-lg font-semibold">
-                  Total Price: {order.totalPrice ? `$${(order.totalPrice / 100).toFixed(2)}` : "Unavailable"}
+                  Total Price: {order.totalPrice ? `$${(order.totalPrice).toFixed(2)}` : "Unavailable"}
                 </p>
                 <button
                   onClick={() => handleViewItems(order)}
@@ -113,15 +113,9 @@ export default function OrdersList() {
             <ul className="space-y-4">
               {selectedOrder.items.map((item, index) => (
                 <li key={index} className="flex items-center space-x-4">
-                  <Image
-                    src={item.imageUrl || "/fallback-image.jpg"} // Display fallback image if not available
-                    alt={item.name || "Unnamed item"}
-                    width={64}
-                    height={64}
-                    className="w-16 h-16 rounded object-cover"
-                  />
                   <div>
-                    <p className="text-sm font-semibold">{item.name || "Unnamed item"}</p>
+                    <p className="text-sm font-semibold">{item.title || "Unnamed item"}</p>
+                    <p className="text-sm">Size: {item.size ?? "N/A"}</p>
                     <p className="text-sm">Quantity: {item.quantity ?? "N/A"}</p>
                     <p className="text-sm">Price: {item.price ? `$${(item.price / 100).toFixed(2)}` : "N/A"}</p>
                   </div>

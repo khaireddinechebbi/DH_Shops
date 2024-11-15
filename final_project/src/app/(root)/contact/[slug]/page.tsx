@@ -1,5 +1,5 @@
 "use client";
-import { Navbar } from "@/components";
+import { Footer, Navbar } from "@/components";
 import { useEffect, useState } from "react";
 import styles from './ContactUs.module.css'; // Updated import for CSS module
 
@@ -73,6 +73,7 @@ export default function ContactUs() {
           <button type="submit" className={styles.button}>Submit</button>
         </div>
       </form>
+      <Footer/>
     </>
   );
 }

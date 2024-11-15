@@ -6,6 +6,8 @@ const CartItemSchema: Schema = new Schema({
   productId: { type: mongoose.Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, required: true },
   size: { type: String, required: true },
+  title: { type: String, required: true},
+  price: { type: Number, required: true},
 });
 
 const OrderSchema: Schema = new Schema({

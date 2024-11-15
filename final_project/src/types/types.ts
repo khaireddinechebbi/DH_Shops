@@ -66,6 +66,8 @@ export interface CartItem {
     productId: string;
     quantity: number;
     size: string;
+    title: string;
+    price: number;
 }
   
 export interface CartDocument extends Document {

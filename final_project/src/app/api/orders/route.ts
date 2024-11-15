@@ -5,11 +5,14 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import Order from "@/models/Orders";
 
+
 // POST method to handle order submission
 export async function POST(request: Request) {
+  // Connect to the database
   await connectDB();
   const session = await getServerSession(authOptions);
 
+  // Check for authenticated user
   if (!session) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
@@ -24,23 +27,23 @@ export async function POST(request: Request) {
     // Parse order details from the request body
     const { items, address, totalPrice } = await request.json();
 
-    // Ensure the order has required details
-    if (!items || !address || totalPrice === undefined) {
+    // Validate order details
+    if (!items || items.length === 0 || !address || totalPrice === undefined) {
       return NextResponse.json({ error: "Missing required order details" }, { status: 400 });
     }
 
     // Create a new order document
     const newOrder = new Order({
       userEmail: session.user.email,
-      items,
       address,
+      items,  // items should match the structure of CartItemSchema
       totalPrice,
     });
 
     // Save the order to the database
     await newOrder.save();
 
-    // Add the new order's ID to the user's orders array
+    // Add the new order's ID to the user's orders array and save user
     user.orders.push(newOrder._id);
     await user.save();
 

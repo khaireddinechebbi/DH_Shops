@@ -50,7 +50,7 @@ export default function Landing() {
             is to bridge the gap between designers and fashion enthusiasts worldwide.
           </p>
           <p>
-            This project is part of my portfolio for Holberton School. I’m grateful for the support and learning that 
+            This project is part of my portfolio for Holberton School. I&apos;m grateful for the support and learning that 
             allowed me to build this platform. <Link href="https://www.holbertonschool.com" className="text-blue-600 underline">Learn more about Holberton School</Link>.
           </p>
         </div>

@@ -1,5 +1,5 @@
 "use client"
-import { About, Cover, Navbar, UserProductsList, ProductForm, Footer } from "@/components";
+import { About, Navbar, UserProductsList, ProductForm, Footer } from "@/components";
 import Link from "next/link";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
@@ -18,9 +18,6 @@ export default function Profile() {
       <Navbar />
       
       <div className="p-4">
-        <div>
-          <Cover/>
-        </div>
         <div>
           <Link href={settingUrl} className="flex justify-end"><CiSettings size={20}/></Link>
           <About/> 

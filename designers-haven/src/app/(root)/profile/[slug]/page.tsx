@@ -65,13 +65,15 @@ export default function Profile({ params }: { params: { slug: string } }) {
     const fetchUser = async () => {
       try {
         // Fetch by code (which is passed as slug)
+        console.log("Fetching user profile for slug:", params.slug);
         const res = await fetch(`/api/user/${params.slug}`);
         if (res.ok) {
           const data = await res.json();
+          console.log("User profile data fetched:", data);
           setProfileUser(data);
         } else {
           // Handle user not found
-          console.error("User not found");
+          console.error("User not found for slug:", params.slug);
         }
       } catch (error) {
         console.error("Error fetching user:", error);

@@ -5,15 +5,20 @@ import Product from "@/models/Products";
 
 export async function GET(
     req: NextRequest,
-    { params }: { params: { username: string } }
+    { params }: { params: { code: string } }
 ) {
     try {
         await connectDB();
 
-        const { username } = params;
+        const { code } = params;
 
-        // Find user by username and populate products
-        const user = await User.findOne({ username: username.toLowerCase() })
+        // Find user by userCode or username (fallback)
+        const user = await User.findOne({
+            $or: [
+                { userCode: code },
+                { username: code.toLowerCase() }
+            ]
+        })
             .select('-password') // Exclude password
             .populate('products')
             .lean();
@@ -26,15 +31,16 @@ export async function GET(
         }
 
         // Return public user data
+        const userData = user as any;
         return NextResponse.json({
-            _id: user._id,
-            name: user.name,
-            username: user.username,
-            bio: user.bio,
-            image: user.image,
-            followersCount: user.followers?.length || 0,
-            followingCount: user.following?.length || 0,
-            products: user.products || [],
+            _id: userData._id,
+            name: userData.name,
+            username: userData.username,
+            bio: userData.bio,
+            image: userData.image,
+            followersCount: userData.followers?.length || 0,
+            followingCount: userData.following?.length || 0,
+            products: userData.products || [],
         }, { status: 200 });
     } catch (error) {
         console.error("Error fetching user by username:", error);

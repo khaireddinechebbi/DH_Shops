@@ -29,6 +29,23 @@ const UserSchema = new Schema<UserDocument>(
             type: String,
             required: [true, "Name is required"],
         },
+        username: {
+            type: String,
+            required: [true, "Username is required"],
+            unique: true,
+            lowercase: true,
+            trim: true,
+            match: [
+                /^[a-z0-9_]+$/,
+                "Username can only contain lowercase letters, numbers, and underscores",
+            ],
+        },
+        userCode: {
+            type: String,
+            required: true,
+            unique: true,
+            index: true,
+        },
         bio: {
             type: String,
             required: false,

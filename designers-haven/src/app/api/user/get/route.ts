@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/auth"; // Adjust path as needed
 import User from "@/models/User"; // Adjust path as needed
 import { connectDB } from "@/lib/mongodb"; // Adjust path as needed
 
-export async function GET(req: Request) {
+export async function GET() {
     await connectDB(); // Ensure the database connection is established
 
     const session = await getServerSession(authOptions);

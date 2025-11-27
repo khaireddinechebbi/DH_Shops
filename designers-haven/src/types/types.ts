@@ -6,6 +6,8 @@ export interface UserDocument {
     email: string;
     password: string;
     name: string;
+    username: string;
+    userCode: string;
     bio: string
     address: AddressDocument;
     phone?: string;
@@ -42,9 +44,15 @@ export interface ProductDocument {
     updatedAt: Date;
     ownerEmail: string;
     ownerName: string; // Owner reference
-    images: ImageDocument[]; // Reflecting that images contain both ID and URL
+    ownerUsername?: string; // Owner username for profile linking
+    ownerCode?: string; // Owner code for profile linking
+    images: string[]; // Reflecting that images are just URLs
     likes: mongoose.Types.ObjectId[]; // List of user IDs who liked the product
     comments: CommentDocument[]; // List of comments on the product
+    // Computed fields from API
+    isLiked?: boolean; // Whether current user has liked this product
+    likesCount?: number; // Total number of likes
+    commentsCount?: number; // Total number of comments
 }
 
 // Interface for images inside ProductDocument
@@ -56,7 +64,7 @@ export interface ImageDocument {
 // Interface for comments on the product
 export interface CommentDocument {
     _id: string;
-    user: mongoose.Schema.Types.ObjectId; // ID of the user who commented
+    user: UserDocument | mongoose.Schema.Types.ObjectId | any; // ID of the user who commented or populated user
     text: string;  // The comment text
     date: Date;    // Date of the comment
 }
@@ -69,14 +77,14 @@ export interface CartItem {
     title: string;
     price: number;
 }
-  
+
 export interface CartDocument extends Document {
     userEmail: string;
     address: string;
     items: CartItem[];
     totalPrice: number;
 }
-  
+
 
 // Interface for CategoryDocument
 export interface CategoryDocument {

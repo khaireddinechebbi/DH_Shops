@@ -9,7 +9,6 @@ import Navbar from "./NavigationBar";
 import Cover from "./profile/Cover";
 import About from "./profile/About";
 import UserProductsList from "./profile/UserProductsList";
-import ProductUpdate from "./profile/ProductUpdate";
 
 
 
@@ -24,6 +23,5 @@ export {
     HeroSession,
     Cover,
     About,
-    UserProductsList,
-    ProductUpdate
+    UserProductsList
 }

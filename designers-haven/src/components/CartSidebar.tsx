@@ -1,9 +1,10 @@
 "use client";
 import React, { useState } from 'react';
 import { useCart } from '@/context/CartContext';
+import { IoClose } from 'react-icons/io5';
 
 export const CartSidebar: React.FC = () => {
-  const { cartItems, removeFromCart, clearCart } = useCart();
+  const { cartItems, removeFromCart, clearCart, isCartOpen, toggleCart } = useCart();
   const [orderAddress, setOrderAddress] = useState("");
 
   const calculateTotalPrice = () => {
@@ -20,23 +21,23 @@ export const CartSidebar: React.FC = () => {
       alert("Your cart is empty.");
       return;
     }
-  
+
     if (!orderAddress) {
       alert("Please enter your shipping address.");
       return;
     }
-  
+
     // Prepare items with the expected format
     const formattedItems = cartItems.map((item) => ({
       productId: item.productId,
       title: item.title,
       size: item.size,
       quantity: item.quantity,
-      price: item.priceInCents, // Convert to dollars or use as required
+      price: item.priceInCents,
     }));
-  
+
     try {
-      const response = await fetch("http://localhost:3000/api/orders", {
+      const response = await fetch("/api/orders", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -44,82 +45,128 @@ export const CartSidebar: React.FC = () => {
         body: JSON.stringify({
           items: formattedItems,
           address: orderAddress,
-          totalPrice: totalPrice / 100, // Ensure consistent units
+          totalPrice: totalPrice / 100,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Failed to submit order");
       }
-  
+
       alert("Order submitted successfully!");
       clearCart();
-      setOrderAddress(""); // Clear the address after successful submission
+      setOrderAddress("");
+      toggleCart(); // Close cart after successful order
     } catch (error) {
       console.error("Error submitting order:", error);
       alert("An error occurred while submitting the order.");
     }
   };
-  
-  return (
-    <div className="fixed right-0 w-80 h-full bg-white shadow-lg p-4 overflow-y-auto">
-      <h2 className="text-xl font-semibold mb-4">Your Cart</h2>
 
-      {/* Cart Items */}
-      {cartItems.length === 0 ? (
-        <p className="text-gray-500">Your cart is empty.</p>
-      ) : (
-        <div className="mb-4">
-          {cartItems.map((item) => (
-            <div key={item.productId} className="mb-4">
-              <p className="font-semibold">{item.title}</p>
-              <p>Size: {item.size}</p>
-              <p>Quantity: {item.quantity}</p>
-              <p>Price: ${(item.priceInCents * item.quantity) / 100}</p>
-              <button
-                onClick={() => removeFromCart(item.productId)}
-                className="text-red-500 hover:text-red-700 mt-2"
-              >
-                Remove
-              </button>
-            </div>
-          ))}
-        </div>
+  return (
+    <>
+      {/* Backdrop overlay */}
+      {isCartOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 transition-opacity animate-fade-in"
+          onClick={toggleCart}
+        />
       )}
 
-      {/* Total Price */}
-      <div className="mt-4 mb-4">
-        <p className="font-semibold">Total Price: ${(totalPrice / 100).toFixed(2)}</p>
-      </div>
-
-      {/* Shipping Address */}
-      <div className="mb-4">
-        <label htmlFor="address" className="block text-sm font-semibold mb-2">Shipping Address</label>
-        <textarea
-          id="address"
-          value={orderAddress}
-          onChange={(e) => setOrderAddress(e.target.value)}
-          placeholder="Enter your shipping address"
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-      </div>
-
-      {/* Submit Button */}
-      <button
-        onClick={handleSubmitOrder}
-        disabled={cartItems.length === 0 || !orderAddress}
-        className="w-full py-2 bg-blue-500 text-white font-semibold rounded-md disabled:bg-gray-300"
+      {/* Cart Sidebar */}
+      <div
+        className={`fixed right-0 top-0 w-full sm:w-96 h-full bg-white shadow-2xl p-6 overflow-y-auto z-50 transform transition-transform duration-300 ease-in-out ${isCartOpen ? 'translate-x-0' : 'translate-x-full'
+          }`}
       >
-        Submit Order
-      </button>
+        {/* Header with close button */}
+        <div className="flex justify-between items-center mb-6 pb-4 border-b">
+          <h2 className="text-2xl font-display font-semibold text-gray-900">Your Cart</h2>
+          <button
+            onClick={toggleCart}
+            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            aria-label="Close cart"
+          >
+            <IoClose size={28} className="text-gray-600" />
+          </button>
+        </div>
 
-      {/* Clear Cart Button */}
-      <button
-        onClick={clearCart}
-        className="w-full mt-4 py-2 bg-red-500 text-white font-semibold rounded-md hover:bg-red-600"
-      >
-        Clear Cart
-      </button>
-    </div>
+        {/* Cart Items */}
+        {cartItems.length === 0 ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-gray-400 text-lg">Your cart is empty</p>
+            <p className="text-gray-400 text-sm mt-2">Add some items to get started!</p>
+          </div>
+        ) : (
+          <div className="mb-6 space-y-4">
+            {cartItems.map((item, index) => (
+              <div key={`${item.productId}-${index}`} className="bg-gray-50 rounded-xl p-4 hover:shadow-md transition-shadow">
+                <div className="flex justify-between items-start mb-2">
+                  <h3 className="font-semibold text-gray-900 flex-1">{item.title}</h3>
+                  <button
+                    onClick={() => removeFromCart(item.productId)}
+                    className="text-red-500 hover:text-red-700 ml-2 text-sm font-medium transition-colors"
+                  >
+                    Remove
+                  </button>
+                </div>
+                <div className="flex justify-between items-center text-sm text-gray-600">
+                  <div>
+                    <p>Size: <span className="font-medium">{item.size}</span></p>
+                    <p>Qty: <span className="font-medium">{item.quantity}</span></p>
+                  </div>
+                  <p className="text-lg font-semibold text-gray-900">
+                    ${(item.priceInCents * item.quantity) / 100}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Total Price */}
+        <div className="mb-6 py-4 border-t border-b">
+          <div className="flex justify-between items-center">
+            <span className="text-lg font-display font-semibold text-gray-900">Total</span>
+            <span className="text-2xl font-display font-bold bg-gradient-accent bg-clip-text text-transparent">
+              ${(totalPrice / 100).toFixed(2)}
+            </span>
+          </div>
+        </div>
+
+        {/* Shipping Address */}
+        <div className="mb-6">
+          <label htmlFor="address" className="block text-sm font-semibold text-gray-700 mb-2">
+            Shipping Address
+          </label>
+          <textarea
+            id="address"
+            value={orderAddress}
+            onChange={(e) => setOrderAddress(e.target.value)}
+            placeholder="Enter your shipping address..."
+            className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition resize-none"
+            rows={3}
+          />
+        </div>
+
+        {/* Action Buttons */}
+        <div className="space-y-3">
+          <button
+            onClick={handleSubmitOrder}
+            disabled={cartItems.length === 0 || !orderAddress}
+            className="w-full py-3 bg-gradient-primary text-white font-semibold rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-lg transition transform hover:scale-[1.02] active:scale-[0.98]"
+          >
+            Place Order
+          </button>
+
+          <button
+            onClick={clearCart}
+            disabled={cartItems.length === 0}
+            className="w-full py-3 bg-gray-100 text-gray-700 font-semibold rounded-lg hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition"
+          >
+            Clear Cart
+          </button>
+        </div>
+      </div>
+    </>
   );
 };

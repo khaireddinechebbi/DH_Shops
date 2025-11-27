@@ -1,29 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { FaPenSquare } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
-import ProductUpdate from "./ProductUpdate";
-
-// Define the type for Product
-interface Product {
-  _id: string;
-  title: string;
-  images: string[];
-  description: string;
-  priceInCents: number;
-  brand: string;
-}
+import { ProductDocument } from "@/types/types";
 
 // Define the type for the API response
 interface ProductsResponse {
-  products: Product[];
+  products: ProductDocument[];
 }
 
 // Function to fetch products
 const getProducts = async (): Promise<ProductsResponse | null> => {
   try {
-    const res = await fetch("http://localhost:3000/api/user/products", {
+    const res = await fetch("/api/user/products", {
       cache: "no-cache",
     });
 
@@ -38,38 +28,51 @@ const getProducts = async (): Promise<ProductsResponse | null> => {
   }
 };
 
-// Main ProductsList component
-export default function UserProductsList() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null); // Track the selected product
+interface UserProductsListProps {
+  onEdit: (product: ProductDocument) => void;
+  refreshProducts: () => void;
+  onProductAddedOrUpdated: () => void;
+  refreshTrigger: number;
+  products?: ProductDocument[];
+  isOwnProfile?: boolean;
+}
 
-  // Fetch products when the component mounts
-  React.useEffect(() => {
+// Main ProductsList component
+export default function UserProductsList({
+  onEdit,
+  refreshProducts,
+  refreshTrigger,
+  products: initialProducts,
+  isOwnProfile = true,
+}: UserProductsListProps) {
+  const [products, setProducts] = useState<ProductDocument[]>(initialProducts || []);
+
+  // Fetch products when the component mounts or refreshTrigger changes, ONLY if initialProducts is not provided
+  useEffect(() => {
+    if (initialProducts) {
+      setProducts(initialProducts);
+      return;
+    }
+
     const fetchProducts = async () => {
       const data = await getProducts();
       if (data) setProducts(data.products);
     };
 
     fetchProducts();
-  }, []);
-
-  const handleProductClick = (product: Product) => {
-    setSelectedProduct(product); // Set the selected product to show in the modal for updating
-  };
-
-  const handleCloseModal = () => {
-    setSelectedProduct(null); // Close the modal by setting selectedProduct to null
-  };
+  }, [refreshTrigger, initialProducts]);
 
   const handleDelete = async (productId: string) => {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+
     try {
-      const res = await fetch(`http://localhost:3000/api/products/${productId}`, {
+      const res = await fetch(`/api/products/${productId}`, {
         method: "DELETE",
       });
 
       if (res.ok) {
-        // Filter out the deleted product from the products list
-        setProducts((prevProducts) => prevProducts.filter((p) => p._id !== productId));
+        // Trigger refresh in parent
+        refreshProducts();
       } else {
         console.error("Failed to delete product");
       }
@@ -78,50 +81,58 @@ export default function UserProductsList() {
     }
   };
 
-
-
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
       {products.map((product) => (
-        <article key={product._id} className="overflow-hidden rounded-lg shadow transition hover:shadow-lg">
-          <Image
-            alt={product.title}
-            src={product.images && product.images.length > 0 ? product.images[0] : "/fallback-image.jpg"} // Fallback image if no product image
-            width={500}
-            height={300}
-            className="h-56 w-full rounded-xl object-cover shadow-xl transition group-hover:grayscale-[50%]"
-          />
-          <div className="p-4">
-            <h2 className="mt-2 text-lg font-medium text-gray-900">{product.title}</h2>
-            <p className="mt-2 text-sm text-gray-500">{product.brand}</p> {/* Display brand */}
-            <p className="mt-2 line-clamp-3 text-sm/relaxed text-gray-500">
+        <article
+          key={product._id}
+          className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-white"
+        >
+          <div className="relative h-64 w-full overflow-hidden">
+            <Image
+              alt={product.title}
+              src={product.images && product.images.length > 0 ? product.images[0] : "/fallback-image.jpg"}
+              fill
+              className="object-cover transition-transform duration-500 group-hover:scale-110"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </div>
+
+          <div className="p-5">
+            <h2 className="text-lg font-display font-semibold text-gray-900 line-clamp-1 mb-1">
+              {product.title}
+            </h2>
+            <p className="text-sm text-gray-500 font-medium mb-2">{product.brand}</p>
+            <p className="text-sm text-gray-600 line-clamp-2 mb-4">
               {product.description}
             </p>
-            <div className="flex items-center justify-between">
-              <p className="mt-2 text-lg font-semibold text-gray-800">
+
+            <div className="flex items-center justify-between pt-3 border-t">
+              <p className="text-xl font-display font-bold bg-gradient-accent bg-clip-text text-transparent">
                 ${(product.priceInCents / 100).toFixed(2)}
               </p>
-              <div className="flex ">
-                <button
-                  className="mt-2 bg-white text-yellow-700 font-bold px-2 py-2 rounded-full hover:bg-yellow-700 hover:text-white transition"
-                  onClick={() => handleProductClick(product)} // Open modal to update product details
-                >
-                  <FaPenSquare />
-                </button>
-                <button
-                  className="mt-2 bg-white text-red-700 font-bold px-2 py-2 rounded-full hover:bg-red-700 hover:text-white transition"
-                  onClick={() => handleDelete(product._id)} // Delete product
-                >
-                  <RiDeleteBin6Fill />
-                </button>
-              </div>
+              {isOwnProfile && (
+                <div className="flex gap-2">
+                  <button
+                    className="p-2.5 bg-yellow-50 text-yellow-600 rounded-full hover:bg-gradient-primary hover:text-white transition-all transform hover:scale-110"
+                    onClick={() => onEdit(product)}
+                    aria-label="Edit product"
+                  >
+                    <FaPenSquare size={18} />
+                  </button>
+                  <button
+                    className="p-2.5 bg-red-50 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all transform hover:scale-110"
+                    onClick={() => handleDelete(product._id)}
+                    aria-label="Delete product"
+                  >
+                    <RiDeleteBin6Fill size={18} />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </article>
       ))}
-
-      
-      {selectedProduct && <ProductUpdate product={selectedProduct} onClose={handleCloseModal} />}
     </div>
   );
 }

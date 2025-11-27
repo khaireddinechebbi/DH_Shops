@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import Product from "@/models/Products";
 import { connectDB } from "@/lib/mongodb";
+import { NextRequest } from "next/server";
+import { writeFile } from "fs/promises";
+import { join } from "path";
 
 // GET: Fetch a single product by ID
 export async function GET(request: Request, { params }: { params: { id: string } }) {
@@ -22,13 +25,54 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT: Update a product by ID
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
     const { id } = params;
     await connectDB();
 
     try {
-        const updateData = await request.json();
-        const updatedProduct = await Product.findByIdAndUpdate(id, updateData, { new: true });
+        const data = await request.formData();
+
+        // Extracting the product fields
+        const title = data.get("title") as string;
+        const priceInCents = Number(data.get("priceInCents"));
+        const description = data.get("description") as string;
+        const sizes = data.getAll("sizes") as string[];
+        const category = data.get("category") as string;
+        const sex = data.get("sex") as string;
+        const brand = data.get("brand") as string;
+        const existingImages = data.getAll("existingImages") as string[]; // Get existing image URLs
+        
+        // Handling new file uploads
+        const newFiles = data.getAll("files");
+        const newImageUrls: string[] = [];
+
+        for (const file of newFiles) {
+            if (file instanceof File) {
+                const bytes = await file.arrayBuffer();
+                const buffer = Buffer.from(bytes);
+                const fileName = `${Date.now()}-${file.name}`;
+                const path = join(process.cwd(), "public", "uploads", fileName);
+
+                // Write file to the public folder
+                await writeFile(path, buffer);
+                newImageUrls.push(`/uploads/${fileName}`);
+            }
+        }
+
+        const allImageUrls = [...existingImages, ...newImageUrls];
+
+        const updatedProductData = {
+            title,
+            priceInCents,
+            description,
+            sizes,
+            category,
+            sex,
+            brand,
+            images: allImageUrls,
+        };
+
+        const updatedProduct = await Product.findByIdAndUpdate(id, updatedProductData, { new: true });
 
         if (!updatedProduct) {
             return NextResponse.json({ error: "Product not found" }, { status: 404 });

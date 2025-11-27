@@ -24,6 +24,7 @@
     "class-variance-authority": "^0.7.0",
     "cloudinary": "^2.5.1",
     "clsx": "^2.1.1",
+    "dotenv": "^17.2.3",
     "formidable": "^3.5.2",
     "framer-motion": "^11.11.9",
     "lucide-react": "^0.452.0",

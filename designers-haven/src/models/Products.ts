@@ -44,7 +44,15 @@ const ProductSchema = new Schema<ProductDocument>(
             type: String,
             required: true
         },
-        
+        ownerUsername: {
+            type: String,
+            required: false // Making it optional for backward compatibility with existing products
+        },
+        ownerCode: {
+            type: String,
+            required: false
+        },
+
         likes: {
             type: [mongoose.Schema.Types.ObjectId],
             ref: "User",
@@ -61,7 +69,7 @@ const ProductSchema = new Schema<ProductDocument>(
                     type: String,
                     required: true
                 },
-                date : {
+                date: {
                     type: Date,
                     default: Date.now
                 }

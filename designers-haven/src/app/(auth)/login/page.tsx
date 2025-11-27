@@ -18,22 +18,12 @@ export default function Login() {
             redirect: false,
         });
 
-        // Log the response to check its structure
-        console.log("SignIn Response:", res);
-
         if (res?.error) {
             setError(res.error as string);
         } else if (res?.ok) {
-            // After sign in, retrieve session to get user info
-            const userSub = session?.user?.sub; // Check session for user sub
-
-            // Redirect to the user's home
-            if (userSub) {
-                return router.push(`/home/${userSub}`);
-            } else {
-                console.error("User sub is not available, redirecting to default home.");
-                return router.push("/home");
-            }
+            // Let NextAuth handle the redirect via the redirect callback
+            // which will redirect to /profile/[username]
+            router.push("/home");
         }
     };
 

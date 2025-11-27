@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
         const category = data.get("category") as string;
         const sex = data.get("sex") as string;
         const brand = data.get("brand") as string;
-        
+
         // Handling file uploads
         const files = data.getAll("files");
         const imageUrls = [];
@@ -58,6 +58,8 @@ export async function POST(request: NextRequest) {
             category,
             ownerEmail: session.user.email,
             ownerName: session.user.name,
+            ownerUsername: user.username,
+            ownerCode: user.userCode, // Add ownerCode
             sex,
             brand,
             images: imageUrls,
@@ -77,14 +79,32 @@ export async function POST(request: NextRequest) {
 
 
 
-export async function GET() {
+export async function GET(request: NextRequest) {
     await connectDB();
     try {
+        // Get session to check if user is logged in
+        const session = await getServerSession(authOptions);
+        let currentUserId = null;
+
+        if (session?.user?.email) {
+            const user = await User.findOne({ email: session.user.email }).select('_id');
+            currentUserId = user?._id?.toString();
+        }
+
         const products = await Product.find()
-            .select("title priceInCents description sizes category images owner sex brand") // Include sex and brand
+            .select("title priceInCents description sizes category images sex brand ownerEmail ownerName ownerUsername ownerCode likes comments")
+            .lean()
             .exec();
 
-        return NextResponse.json({ products });
+        // Add isLiked field for each product if user is logged in
+        const productsWithLikeStatus = products.map(product => ({
+            ...product,
+            isLiked: currentUserId ? product.likes?.some((id: any) => id.toString() === currentUserId) : false,
+            likesCount: product.likes?.length || 0,
+            commentsCount: product.comments?.length || 0,
+        }));
+
+        return NextResponse.json({ products: productsWithLikeStatus });
     } catch (error) {
         console.error("Error fetching products:", error);
         return NextResponse.json({ error: "Failed to fetch products" }, { status: 500 });

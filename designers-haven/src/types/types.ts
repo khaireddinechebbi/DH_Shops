@@ -12,6 +12,7 @@ export interface UserDocument {
     address: AddressDocument;
     phone?: string;
     image?: string[];
+    coverImage?: string;
     createdAt: Date;
     updatedAt: Date;
     followers: mongoose.Types.ObjectId[];

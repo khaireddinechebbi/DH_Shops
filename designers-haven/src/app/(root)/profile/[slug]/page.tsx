@@ -2,9 +2,10 @@
 import { About, Navbar, UserProductsList, ProductForm, Footer } from "@/components";
 import Link from "next/link";
 import { useState, useCallback, useEffect } from "react";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 import { CiSettings } from "react-icons/ci";
 import { MdAddBusiness } from "react-icons/md";
+import { FiLogOut } from "react-icons/fi";
 import { ProductDocument } from "@/types/types";
 
 interface UserData {
@@ -126,14 +127,20 @@ export default function Profile({ params }: { params: { slug: string } }) {
       <div className="min-h-screen bg-gray-50 pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Settings button - Only for owner */}
+          {/* Settings and Sign Out buttons */}
           {isOwner && (
-            <div className="flex justify-end mb-6">
-              <Link
-                href={settingUrl}
-                className="p-3 bg-white rounded-full shadow-md hover:shadow-lg transition-all hover:scale-110"
-              >
-                <CiSettings size={24} className="text-gray-700" />
+            <div className="flex justify-end gap-3 mb-6">
+              <Link href={settingUrl}>
+                <button className="p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/50 transition-all transform hover:scale-110">
+                  <CiSettings size={24} />
+                </button>
               </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: "/" })}
+                className="p-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-full shadow-lg hover:shadow-xl hover:shadow-red-500/50 transition-all transform hover:scale-110"
+              >
+                <FiLogOut size={24} />
+              </button>
             </div>
           )}
 
@@ -154,10 +161,10 @@ export default function Profile({ params }: { params: { slug: string } }) {
                     setProductToEdit(null);
                     toggleModal();
                   }}
-                  className="flex items-center gap-2 px-6 py-3 bg-gradient-primary text-white rounded-full hover:shadow-lg transition-all transform hover:scale-105"
+                  className="p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/50 transition-all transform hover:scale-110"
+                  aria-label="Add Product"
                 >
-                  <MdAddBusiness size={20} />
-                  <span className="font-semibold">Add Product</span>
+                  <MdAddBusiness size={24} />
                 </button>
               )}
             </div>

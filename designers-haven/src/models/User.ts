@@ -58,6 +58,10 @@ const UserSchema = new Schema<UserDocument>(
             type: [String],
             required: false,
         },
+        coverImage: {
+            type: String,
+            required: false,
+        },
         address: {
             type: AddressSchema,
             required: false,

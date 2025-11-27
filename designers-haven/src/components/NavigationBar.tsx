@@ -117,13 +117,6 @@ export default function Navbar() {
                 </span>
               )}
             </button>
-
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="px-5 py-2.5 bg-gradient-accent text-white rounded-full font-medium hover:shadow-lg transition transform hover:scale-105"
-            >
-              Sign Out
-            </button>
           </div>
         </div>
 
@@ -166,13 +159,6 @@ export default function Navbar() {
                   {cartItemCount}
                 </span>
               )}
-            </button>
-
-            <button
-              onClick={() => signOut({ callbackUrl: "/" })}
-              className="w-full px-4 py-3 bg-gradient-accent text-white rounded-lg font-medium hover:shadow-lg transition"
-            >
-              Sign Out
             </button>
           </div>
         )}

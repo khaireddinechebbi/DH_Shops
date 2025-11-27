@@ -107,29 +107,41 @@ export default function UserProductsList({
               {product.description}
             </p>
 
-            <div className="flex items-center justify-between pt-3 border-t">
-              <p className="text-xl font-display font-bold bg-gradient-accent bg-clip-text text-transparent">
+            {/* Price Display */}
+            <div className="mb-4">
+              <p className="text-2xl font-display font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                 ${(product.priceInCents / 100).toFixed(2)}
               </p>
-              {isOwnProfile && (
-                <div className="flex gap-2">
-                  <button
-                    className="p-2.5 bg-yellow-50 text-yellow-600 rounded-full hover:bg-gradient-primary hover:text-white transition-all transform hover:scale-110"
-                    onClick={() => onEdit(product)}
-                    aria-label="Edit product"
-                  >
-                    <FaPenSquare size={18} />
-                  </button>
-                  <button
-                    className="p-2.5 bg-red-50 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all transform hover:scale-110"
-                    onClick={() => handleDelete(product._id)}
-                    aria-label="Delete product"
-                  >
-                    <RiDeleteBin6Fill size={18} />
-                  </button>
-                </div>
-              )}
             </div>
+
+            {/* Action Buttons */}
+            {isOwnProfile && (
+              <div className="flex gap-2 pt-3 border-t">
+                <button
+                  className="flex-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all transform hover:scale-105"
+                  onClick={() => {
+                    // Open product details modal or navigate to product page
+                    window.open(`/product/${product._id}`, '_blank');
+                  }}
+                >
+                  View Details
+                </button>
+                <button
+                  className="p-2.5 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-gradient-primary hover:text-white transition-all transform hover:scale-110"
+                  onClick={() => onEdit(product)}
+                  aria-label="Edit product"
+                >
+                  <FaPenSquare size={18} />
+                </button>
+                <button
+                  className="p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all transform hover:scale-110"
+                  onClick={() => handleDelete(product._id)}
+                  aria-label="Delete product"
+                >
+                  <RiDeleteBin6Fill size={18} />
+                </button>
+              </div>
+            )}
           </div>
         </article>
       ))}

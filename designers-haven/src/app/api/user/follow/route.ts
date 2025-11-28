@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
+import Notification from "@/models/Notification";
 
 export async function POST(req: NextRequest) {
     try {
@@ -39,20 +40,35 @@ export async function POST(req: NextRequest) {
         }
 
         // Check if already following
-        const isFollowing = currentUser.following.includes(targetUserId);
+        const isFollowing = currentUser.following.some(
+            (id: any) => id.toString() === targetUserId
+        );
 
         if (isFollowing) {
             // Unfollow: remove from current user's following and target user's followers
             currentUser.following = currentUser.following.filter(
-                (id) => id.toString() !== targetUserId
+                (id: any) => id.toString() !== targetUserId
             );
             targetUser.followers = targetUser.followers.filter(
-                (id) => id.toString() !== currentUser._id.toString()
+                (id: any) => id.toString() !== currentUser._id.toString()
             );
         } else {
             // Follow: add to current user's following and target user's followers
             currentUser.following.push(targetUserId);
             targetUser.followers.push(currentUser._id);
+
+            // Create Notification
+            try {
+                await Notification.create({
+                    recipient: targetUser._id,
+                    sender: currentUser._id,
+                    type: 'follow',
+                    read: false
+                });
+            } catch (notifyError) {
+                console.error("Error creating notification:", notifyError);
+                // Don't fail the request if notification fails
+            }
         }
 
         await currentUser.save();

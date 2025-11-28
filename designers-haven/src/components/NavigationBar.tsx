@@ -6,6 +6,7 @@ import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import { useCart } from "@/context/CartContext";
 import { FiShoppingCart } from "react-icons/fi";
+import NotificationDropdown from "./notifications/NotificationDropdown";
 
 export default function Navbar() {
   const { data: session } = useSession();
@@ -103,6 +104,9 @@ export default function Navbar() {
           )}
 
           <div className="hidden md:flex items-center space-x-4">
+            {/* Notifications */}
+            <NotificationDropdown />
+
             {/* Cart Button */}
             <button
               onClick={toggleCart}

@@ -2,34 +2,21 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CommentDocument, ImageDocument } from '@/types/types';
+import { CommentDocument, ImageDocument, ProductDocument } from '@/types/types';
 import { useCart } from '@/context/CartContext';
 import { useSession } from 'next-auth/react';
-import { FaHeart, FaRegHeart, FaPaperPlane, FaTrash } from 'react-icons/fa';
-
-// Define Product type
-interface Product {
-  _id: string;
-  title: string;
-  sizes: string[];
-  category: string;
-  brand: string;
-  sex: string;
-  priceInCents: number;
-  description: string;
-  ownerName: string;
-  ownerUsername?: string;
-  images: ImageDocument[];
-  likes: string[];
-  comments: CommentDocument[];
-}
+import { FaHeart, FaRegHeart, FaPaperPlane, FaTrash, FaPenSquare } from 'react-icons/fa';
 
 interface ProductModalProps {
-  product: Product | null;
+  product: ProductDocument | null;
   onClose: () => void;
+  onEdit?: (product: ProductDocument) => void;
+  onDelete?: (productId: string) => void;
+  onProductUpdate?: () => void; // Callback to refresh product data
 }
 
-export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) => {
+
+export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, onEdit, onDelete, onProductUpdate }) => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [quantity, setQuantity] = useState<number>(1);
@@ -123,6 +110,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
         const data = await res.json();
         setIsLiked(data.isLiked);
         setLikesCount(data.likesCount);
+        // Notify parent to refresh product data
+        if (onProductUpdate) onProductUpdate();
       } else {
         setIsLiked(!newIsLiked);
         setLikesCount(prev => !newIsLiked ? prev + 1 : prev - 1);
@@ -153,6 +142,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
         const addedComment = await res.json(); // API now returns comment directly
         setComments([...comments, addedComment]);
         setNewComment("");
+        // Notify parent to refresh product data
+        if (onProductUpdate) onProductUpdate();
       }
     } catch (error) {
       console.error("Error adding comment:", error);
@@ -169,6 +160,8 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
 
       if (res.ok) {
         setComments(comments.filter(c => c._id !== commentId));
+        // Notify parent to refresh product data
+        if (onProductUpdate) onProductUpdate();
       }
     } catch (error) {
       console.error("Error deleting comment:", error);
@@ -189,10 +182,10 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
       onClick={handleBackdropClick}
     >
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto relative animate-scale-in flex flex-col md:flex-row">
-        {/* Close button */}
+        {/* Close button - Moved outside/adjusted to not overlap content */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 z-20 w-10 h-10 flex items-center justify-center rounded-full bg-red-500 text-white hover:bg-red-600 transition-all shadow-lg"
+          className="absolute top-2 right-2 z-50 w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 text-gray-600 hover:bg-red-500 hover:text-white transition-all shadow-sm"
           aria-label="Close modal"
         >
           ✕
@@ -245,6 +238,28 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
             <p className="text-2xl font-display font-bold bg-gradient-accent bg-clip-text text-transparent mt-2">
               ${(product.priceInCents / 100).toFixed(2)}
             </p>
+
+            {/* Owner Actions */}
+            {session?.user?.email === (product as any).ownerEmail && (
+              <div className="flex gap-2 mt-4">
+                {onEdit && (
+                  <button
+                    onClick={() => onEdit(product)}
+                    className="flex items-center gap-2 px-4 py-2 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-yellow-100 transition"
+                  >
+                    <FaPenSquare /> Edit
+                  </button>
+                )}
+                {onDelete && (
+                  <button
+                    onClick={() => onDelete(product._id)}
+                    className="flex items-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition"
+                  >
+                    <FaTrash /> Delete
+                  </button>
+                )}
+              </div>
+            )}
           </div>
 
           {/* Description & Attributes */}
@@ -313,11 +328,15 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose }) 
                       <span className="font-semibold text-sm">{comment.user?.name || 'User'}</span>
                       <span className="text-xs text-gray-400">{new Date(comment.date).toLocaleDateString()}</span>
                     </div>
-                    {session?.user?.email === comment.user?.email && ( // Basic check, ideally check ID
-                      <button onClick={() => handleDeleteComment(comment._id)} className="text-red-400 hover:text-red-600">
-                        <FaTrash size={12} />
-                      </button>
-                    )}
+                    {/* Check ownership using ID (preferred) or email (fallback) */}
+                    {(session?.user && (
+                      (session.user as any).id === comment.user?._id ||
+                      session.user.email === comment.user?.email
+                    )) && (
+                        <button onClick={() => handleDeleteComment(comment._id)} className="text-red-400 hover:text-red-600">
+                          <FaTrash size={12} />
+                        </button>
+                      )}
                   </div>
                   <p className="text-gray-700 text-sm">{comment.text}</p>
                 </div>

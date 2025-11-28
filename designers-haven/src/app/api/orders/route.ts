@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import Order from "@/models/Orders";
+import Product from "@/models/Products";
 
 
 // POST method to handle order submission
@@ -32,11 +33,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing required order details" }, { status: 400 });
     }
 
+    // Enrich items with product owner information
+    const enrichedItems = await Promise.all(
+      items.map(async (item: any) => {
+        const product = await Product.findById(item.productId);
+        return {
+          ...item,
+          ownerEmail: product?.ownerEmail || '',
+          sex: product?.sex || '',
+          imageUrl: product?.images?.[0] || '',
+        };
+      })
+    );
+
     // Create a new order document
     const newOrder = new Order({
       userEmail: session.user.email,
       address,
-      items,  // items should match the structure of CartItemSchema
+      items: enrichedItems,
       totalPrice,
     });
 

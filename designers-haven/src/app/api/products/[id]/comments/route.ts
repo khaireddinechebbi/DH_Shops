@@ -4,6 +4,7 @@ import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Products";
 import User from "@/models/User";
+import Notification from "@/models/Notification";
 
 // GET all comments for a product
 export async function GET(
@@ -83,6 +84,25 @@ export async function POST(
 
         product.comments.push(newComment);
         await product.save();
+
+        // Create Notification if not commenting on own product
+        if (product.ownerEmail !== user.email) {
+            try {
+                // Find owner to get ID
+                const owner = await User.findOne({ email: product.ownerEmail });
+                if (owner) {
+                    await Notification.create({
+                        recipient: owner._id,
+                        sender: user._id,
+                        type: 'comment',
+                        product: product._id,
+                        read: false
+                    });
+                }
+            } catch (notifyError) {
+                console.error("Error creating notification:", notifyError);
+            }
+        }
 
         // Populate the user data for the response
         await product.populate('comments.user', 'name username image');

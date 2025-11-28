@@ -28,20 +28,13 @@ const getProducts = async (): Promise<ProductsResponse | null> => {
   }
 };
 
-// Main ProductsList component
-export default function ProductsList() {
-  const [products, setProducts] = useState<ProductDocument[]>([]);
+interface ProductsListProps {
+  products: ProductDocument[];
+  onRefresh?: () => void; // Callback to refresh products
+}
+
+export default function ProductsList({ products, onRefresh }: ProductsListProps) {
   const [selectedProduct, setSelectedProduct] = useState<ProductDocument | null>(null); // Track the selected product
-
-  // Fetch products when the component mounts
-  React.useEffect(() => {
-    const fetchProducts = async () => {
-      const data = await getProducts();
-      if (data) setProducts(data.products);
-    };
-
-    fetchProducts();
-  }, []);
 
   const handleProductClick = (product: ProductDocument) => {
     setSelectedProduct(product); // Set the selected product to show in the modal
@@ -62,7 +55,13 @@ export default function ProductsList() {
       ))}
 
       {/* Render the modal if a product is selected */}
-      {selectedProduct && <ProductModal product={selectedProduct} onClose={handleCloseModal} />}
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct}
+          onClose={handleCloseModal}
+          onProductUpdate={onRefresh}
+        />
+      )}
     </div>
   );
 }

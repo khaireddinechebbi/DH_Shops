@@ -7,7 +7,7 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
 
   // List of protected routes (require authentication)
-  const protectedRoutes = ['/home', '/profile', '/orders', '/contact'];
+  const protectedRoutes = ['/home', '/profile', '/orders', '/contact', '/dashboard'];
 
   // List of auth routes (should redirect to home if already authenticated)
   const authRoutes = ['/login', '/signup'];

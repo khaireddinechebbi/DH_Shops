@@ -6,8 +6,11 @@ const CartItemSchema: Schema = new Schema({
   productId: { type: mongoose.Types.ObjectId, ref: 'Product', required: true },
   quantity: { type: Number, required: true },
   size: { type: String, required: true },
-  title: { type: String, required: true},
-  price: { type: Number, required: true},
+  title: { type: String, required: true },
+  price: { type: Number, required: true },
+  ownerEmail: { type: String, required: true }, // Track product seller for income calculation
+  sex: { type: String },
+  imageUrl: { type: String },
 });
 
 const OrderSchema: Schema = new Schema({
@@ -16,9 +19,9 @@ const OrderSchema: Schema = new Schema({
   items: [CartItemSchema],
   totalPrice: { type: Number, required: true },
 },
-{
-  timestamps: true
-});
+  {
+    timestamps: true
+  });
 
 const Order = mongoose.models.Order || mongoose.model<CartDocument & Document>('Order', OrderSchema);
 export default Order

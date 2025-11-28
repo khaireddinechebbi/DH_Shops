@@ -207,10 +207,10 @@ export default function About({ user, isOwnProfile }: AboutProps) {
                 </div>
 
                 {/* Profile Content */}
-                <div className="relative px-8 pb-10 -mt-24">
+                <div className="relative px-8 pb-8">
                     <div className="flex flex-col lg:flex-row gap-8 items-start">
-                        {/* Profile Picture with Artistic Frame */}
-                        <div className="relative group mx-auto lg:mx-0">
+                        {/* Profile Picture with Artistic Frame - Overlapping Cover */}
+                        <div className="relative group mx-auto lg:mx-0 -mt-24">
                             <div className="absolute -inset-1 bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 rounded-full blur opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-tilt"></div>
                             <div className="relative w-48 h-48 rounded-full p-2 bg-white shadow-2xl">
                                 <div className="w-full h-full rounded-full overflow-hidden border-4 border-white bg-gradient-to-br from-purple-100 to-pink-100 relative">

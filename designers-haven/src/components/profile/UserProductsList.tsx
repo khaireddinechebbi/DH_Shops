@@ -1,9 +1,10 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { FaPenSquare } from "react-icons/fa";
+import { FaPenSquare, FaHeart, FaComment } from "react-icons/fa";
 import { RiDeleteBin6Fill } from "react-icons/ri";
 import { ProductDocument } from "@/types/types";
+import { ProductModal } from "../product/ProductModal";
 
 // Define the type for the API response
 interface ProductsResponse {
@@ -46,6 +47,7 @@ export default function UserProductsList({
   isOwnProfile = true,
 }: UserProductsListProps) {
   const [products, setProducts] = useState<ProductDocument[]>(initialProducts || []);
+  const [selectedProduct, setSelectedProduct] = useState<ProductDocument | null>(null);
 
   // Fetch products when the component mounts or refreshTrigger changes, ONLY if initialProducts is not provided
   useEffect(() => {
@@ -73,6 +75,7 @@ export default function UserProductsList({
       if (res.ok) {
         // Trigger refresh in parent
         refreshProducts();
+        setSelectedProduct(null); // Close modal if open
       } else {
         console.error("Failed to delete product");
       }
@@ -82,69 +85,46 @@ export default function UserProductsList({
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 p-6">
-      {products.map((product) => (
-        <article
-          key={product._id}
-          className="group relative overflow-hidden rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 bg-white"
-        >
-          <div className="relative h-64 w-full overflow-hidden">
+    <>
+      <div className="grid grid-cols-3 gap-1 md:gap-4 p-1 md:p-4">
+        {products.map((product) => (
+          <div
+            key={product._id}
+            className="relative aspect-square group cursor-pointer overflow-hidden bg-gray-100"
+            onClick={() => setSelectedProduct(product)}
+          >
             <Image
               alt={product.title}
               src={product.images && product.images.length > 0 ? product.images[0] : "/fallback-image.jpg"}
               fill
               className="object-cover transition-transform duration-500 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-          </div>
 
-          <div className="p-5">
-            <h2 className="text-lg font-display font-semibold text-gray-900 line-clamp-1 mb-1">
-              {product.title}
-            </h2>
-            <p className="text-sm text-gray-500 font-medium mb-2">{product.brand}</p>
-            <p className="text-sm text-gray-600 line-clamp-2 mb-4">
-              {product.description}
-            </p>
-
-            {/* Price Display */}
-            <div className="mb-4">
-              <p className="text-2xl font-display font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                ${(product.priceInCents / 100).toFixed(2)}
-              </p>
-            </div>
-
-            {/* Action Buttons */}
-            {isOwnProfile && (
-              <div className="flex gap-2 pt-3 border-t">
-                <button
-                  className="flex-1 px-3 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg text-sm font-semibold hover:shadow-lg transition-all transform hover:scale-105"
-                  onClick={() => {
-                    // Open product details modal or navigate to product page
-                    window.open(`/product/${product._id}`, '_blank');
-                  }}
-                >
-                  View Details
-                </button>
-                <button
-                  className="p-2.5 bg-yellow-50 text-yellow-600 rounded-lg hover:bg-gradient-primary hover:text-white transition-all transform hover:scale-110"
-                  onClick={() => onEdit(product)}
-                  aria-label="Edit product"
-                >
-                  <FaPenSquare size={18} />
-                </button>
-                <button
-                  className="p-2.5 bg-red-50 text-red-600 rounded-lg hover:bg-red-600 hover:text-white transition-all transform hover:scale-110"
-                  onClick={() => handleDelete(product._id)}
-                  aria-label="Delete product"
-                >
-                  <RiDeleteBin6Fill size={18} />
-                </button>
+            {/* Hover Overlay */}
+            <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center gap-6 text-white">
+              <div className="flex items-center gap-2">
+                <FaHeart className="text-xl" />
+                <span className="font-bold">{product.likes?.length || 0}</span>
               </div>
-            )}
+              <div className="flex items-center gap-2">
+                <FaComment className="text-xl" />
+                <span className="font-bold">{product.comments?.length || 0}</span>
+              </div>
+            </div>
           </div>
-        </article>
-      ))}
-    </div>
+        ))}
+      </div>
+
+      {/* Product Modal */}
+      {selectedProduct && (
+        <ProductModal
+          product={selectedProduct as any}
+          onClose={() => setSelectedProduct(null)}
+          onEdit={isOwnProfile ? onEdit : undefined}
+          onDelete={isOwnProfile ? handleDelete : undefined}
+          onProductUpdate={refreshProducts}
+        />
+      )}
+    </>
   );
 }

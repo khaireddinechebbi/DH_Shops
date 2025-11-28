@@ -1,7 +1,23 @@
 import { Footer, Navbar } from "@/components"
-import ProductsList from "@/components/home/ProductsList"
+import ProductShowcaseWrapper from "@/components/home/ProductShowcaseWrapper"
+import { connectDB } from "@/lib/mongodb"
+import Product from "@/models/Products"
+import { ProductDocument } from "@/types/types"
 
-export default function Home() {
+async function getProducts(): Promise<ProductDocument[]> {
+  try {
+    await connectDB();
+    const products = await Product.find({}).sort({ createdAt: -1 }).lean();
+    return JSON.parse(JSON.stringify(products));
+  } catch (error) {
+    console.error("Error fetching products:", error);
+    return [];
+  }
+}
+
+export default async function Home() {
+  const products = await getProducts();
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-50 via-white to-pink-50">
       <Navbar />
@@ -60,7 +76,7 @@ export default function Home() {
           </div>
         </div>
 
-        <ProductsList />
+        <ProductShowcaseWrapper initialProducts={products} />
       </div>
 
       <Footer />

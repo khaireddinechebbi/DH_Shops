@@ -6,6 +6,7 @@ import { useSession, signOut } from "next-auth/react";
 import { CiSettings } from "react-icons/ci";
 import { MdAddBusiness } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
+import { MdDashboard } from "react-icons/md";
 import { ProductDocument } from "@/types/types";
 
 interface UserData {
@@ -29,6 +30,7 @@ export default function Profile({ params }: { params: { slug: string } }) {
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [profileUser, setProfileUser] = useState<UserData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   const { data: session } = useSession();
   const isOwnProfile = session?.user?.email === profileUser?.email || session?.user?.name === profileUser?.username; // Fallback check
@@ -130,13 +132,18 @@ export default function Profile({ params }: { params: { slug: string } }) {
           {/* Settings and Sign Out buttons */}
           {isOwner && (
             <div className="flex justify-end gap-3 mb-6">
+              <Link href={`/dashboard/${session?.user?.userCode || session?.user?.username}`}>
+                <button className="p-3 bg-gradient-to-r from-green-500 to-emerald-600 text-white rounded-full shadow-lg hover:shadow-xl hover:shadow-green-500/50 transition-all transform hover:scale-110">
+                  <MdDashboard size={24} />
+                </button>
+              </Link>
               <Link href={settingUrl}>
                 <button className="p-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl hover:shadow-purple-500/50 transition-all transform hover:scale-110">
                   <CiSettings size={24} />
                 </button>
               </Link>
               <button
-                onClick={() => signOut({ callbackUrl: "/" })}
+                onClick={() => setShowSignOutModal(true)}
                 className="p-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-full shadow-lg hover:shadow-xl hover:shadow-red-500/50 transition-all transform hover:scale-110"
               >
                 <FiLogOut size={24} />
@@ -197,6 +204,53 @@ export default function Profile({ params }: { params: { slug: string } }) {
 
             <div className="p-6 pt-0">
               <ProductForm initialData={productToEdit} onProductAddedOrUpdated={handleProductFormClose} />
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sign Out Confirmation Modal */}
+      {showSignOutModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in"
+          onClick={() => setShowSignOutModal(false)}
+        >
+          <div
+            className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden animate-scale-in"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-red-500 to-pink-600 p-6 text-center">
+              <div className="w-16 h-16 mx-auto mb-4 bg-white/20 rounded-full flex items-center justify-center">
+                <FiLogOut className="text-white text-3xl" />
+              </div>
+              <h2 className="text-2xl font-display font-bold text-white">Sign Out</h2>
+            </div>
+
+            {/* Modal Content */}
+            <div className="p-6 text-center">
+              <p className="text-gray-700 text-lg mb-6">
+                Are you sure you want to sign out?
+              </p>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowSignOutModal(false)}
+                  className="flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    await signOut({ redirect: false });
+                    window.location.href = "/";
+                  }}
+                  className="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-pink-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105"
+                >
+                  Continue
+                </button>
+              </div>
             </div>
           </div>
         </div>

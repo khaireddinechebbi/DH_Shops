@@ -3,6 +3,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Products";
+import User from "@/models/User";
+import Notification from "@/models/Notification";
 
 export async function POST(
     req: NextRequest,
@@ -42,13 +44,32 @@ export async function POST(
         );
 
         if (isLiked) {
-            // Unlike: remove user ID from likes array
+            // Unlike
             product.likes = product.likes.filter(
-                (likeId) => likeId.toString() !== userIdString
+                (id) => id.toString() !== user._id.toString()
             );
         } else {
-            // Like: add user ID to likes array
+            // Like
             product.likes.push(user._id);
+
+            // Create Notification if not liking own product
+            if (product.ownerEmail !== user.email) {
+                try {
+                    // Find owner to get ID
+                    const owner = await User.findOne({ email: product.ownerEmail });
+                    if (owner) {
+                        await Notification.create({
+                            recipient: owner._id,
+                            sender: user._id,
+                            type: 'like',
+                            product: product._id,
+                            read: false
+                        });
+                    }
+                } catch (notifyError) {
+                    console.error("Error creating notification:", notifyError);
+                }
+            }
         }
 
         await product.save();

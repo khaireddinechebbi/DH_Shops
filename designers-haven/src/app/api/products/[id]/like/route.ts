@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/mongodb";
 import Product from "@/models/Products";
 import User from "@/models/User";
 import Notification from "@/models/Notification";
+import mongoose from "mongoose";
 
 export async function POST(
     req: NextRequest,
@@ -31,7 +32,7 @@ export async function POST(
         }
 
         // Get user to get their ID
-        const User = (await import("@/models/User")).default;
+        // const User = (await import("@/models/User")).default; // Removed shadowed import
         const user = await User.findOne({ email: session.user.email });
         if (!user) {
             return NextResponse.json({ error: "User not found" }, { status: 404 });
@@ -40,13 +41,13 @@ export async function POST(
         // Check if user already liked the product
         const userIdString = user._id.toString();
         const isLiked = product.likes.some(
-            (likeId) => likeId.toString() === userIdString
+            (likeId: mongoose.Types.ObjectId) => likeId.toString() === userIdString
         );
 
         if (isLiked) {
             // Unlike
             product.likes = product.likes.filter(
-                (id) => id.toString() !== user._id.toString()
+                (id: mongoose.Types.ObjectId) => id.toString() !== user._id.toString()
             );
         } else {
             // Like

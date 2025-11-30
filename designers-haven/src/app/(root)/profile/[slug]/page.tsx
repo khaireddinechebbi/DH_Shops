@@ -19,8 +19,8 @@ interface UserData {
   image?: string[];
   followersCount?: number;
   followingCount?: number;
-  followers?: any[];
-  following?: any[];
+  followers?: string[];
+  following?: string[];
   products?: ProductDocument[];
 }
 
@@ -33,7 +33,7 @@ export default function Profile({ params }: { params: { slug: string } }) {
   const [showSignOutModal, setShowSignOutModal] = useState(false);
 
   const { data: session } = useSession();
-  const isOwnProfile = session?.user?.email === profileUser?.email || session?.user?.name === profileUser?.username; // Fallback check
+
   // Better check: if session.user.email matches profileUser.email (if available) or if we can get ID.
   // The API /api/user/[username] doesn't return email for public.
   // But if it's own profile, we might want to know.

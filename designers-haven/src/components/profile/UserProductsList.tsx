@@ -1,8 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { FaPenSquare, FaHeart, FaComment } from "react-icons/fa";
-import { RiDeleteBin6Fill } from "react-icons/ri";
+import { FaHeart, FaComment } from "react-icons/fa";
 import { ProductDocument } from "@/types/types";
 import { ProductModal } from "../product/ProductModal";
 
@@ -118,7 +117,7 @@ export default function UserProductsList({
       {/* Product Modal */}
       {selectedProduct && (
         <ProductModal
-          product={selectedProduct as any}
+          product={selectedProduct}
           onClose={() => setSelectedProduct(null)}
           onEdit={isOwnProfile ? onEdit : undefined}
           onDelete={isOwnProfile ? handleDelete : undefined}

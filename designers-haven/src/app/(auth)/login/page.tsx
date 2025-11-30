@@ -52,7 +52,7 @@ export default function Login() {
                     <h1 className="text-7xl font-display font-bold mb-6 leading-tight">
                         Welcome to
                         <span className="block bg-gradient-to-r from-white via-purple-200 to-pink-200 bg-clip-text text-transparent">
-                            Designer's Haven
+                            Designer&apos;s Haven
                         </span>
                     </h1>
                     <p className="text-xl text-white/90 mb-8 leading-relaxed">
@@ -174,7 +174,7 @@ export default function Login() {
                             {/* Sign Up Link */}
                             <div className="mt-8 text-center animate-slide-up delay-600">
                                 <p className="text-gray-600">
-                                    Don't have an account?{" "}
+                                    Don&apos;t have an account?{" "}
                                     <Link
                                         href="/signup"
                                         className="font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent hover:underline"

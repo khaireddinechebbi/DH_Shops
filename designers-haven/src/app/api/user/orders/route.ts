@@ -26,6 +26,7 @@ export async function GET() {
         return NextResponse.json({ orders: user.orders });
     } catch (error) {
         console.error("Error retrieving user orders:", error);
-        return NextResponse.json({ error: error.message || "Failed to retrieve orders" }, { status: 500 });
+        const errorMessage = error instanceof Error ? error.message : "Failed to retrieve orders";
+        return NextResponse.json({ error: errorMessage }, { status: 500 });
     }
 }

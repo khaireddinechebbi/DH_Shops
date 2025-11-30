@@ -40,7 +40,7 @@ async function migrateUserCodes() {
         const usedCodes = new Set<string>();
 
         // Get all existing codes
-        const existingUsers = await User.find({ userCode: { $exists: true, $ne: null, $ne: "" } }).select('userCode');
+        const existingUsers = await User.find({ userCode: { $exists: true, $ne: null }, $and: [{ userCode: { $ne: "" } }] }).select('userCode');
         existingUsers.forEach(user => {
             if (user.userCode) {
                 usedCodes.add(user.userCode);

@@ -25,8 +25,8 @@ interface UserData {
     coverImage?: string;
     followersCount?: number;
     followingCount?: number;
-    followers?: any[];
-    following?: any[];
+    followers?: string[];
+    following?: string[];
     isFollowing?: boolean;
 }
 

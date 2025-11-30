@@ -1,21 +1,27 @@
 "use client";
 import { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
+
 import { Navbar, Footer } from "@/components";
 import { FaDollarSign, FaShoppingCart, FaTrophy, FaCalendar, FaArrowUp, FaArrowDown } from "react-icons/fa";
-import Link from "next/link";
-import Image from "next/image";
+import { CartItem } from "@/types/types";
+
+interface Transaction {
+    orderId: string;
+    total: number;
+    date: string;
+    items: CartItem[];
+}
 
 interface DashboardData {
     income: {
         total: number;
         thisMonth: number;
-        transactions: any[];
+        transactions: Transaction[];
     };
     expenses: {
         total: number;
         thisMonth: number;
-        transactions: any[];
+        transactions: Transaction[];
     };
     topProducts: Array<{
         productId: string;
@@ -26,7 +32,6 @@ interface DashboardData {
 }
 
 export default function Dashboard() {
-    const { data: session } = useSession();
     const [data, setData] = useState<DashboardData | null>(null);
     const [loading, setLoading] = useState(true);
 

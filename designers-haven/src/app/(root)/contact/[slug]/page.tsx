@@ -63,7 +63,7 @@ export default function ContactUs() {
               Get in Touch
             </h1>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-              Have a question or want to work together? We'd love to hear from you.
+              Have a question or want to work together? We&apos;d love to hear from you.
             </p>
           </div>
 
@@ -191,8 +191,8 @@ export default function ContactUs() {
                 type="submit"
                 disabled={isSubmitting || submitted}
                 className={`w-full py-4 rounded-xl font-semibold text-white transition-all duration-300 transform hover:scale-105 flex items-center justify-center gap-2 ${submitted
-                    ? "bg-green-500"
-                    : "bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg"
+                  ? "bg-green-500"
+                  : "bg-gradient-to-r from-purple-600 to-pink-600 hover:shadow-lg"
                   } ${isSubmitting ? "opacity-70 cursor-not-allowed" : ""}`}
               >
                 {isSubmitting ? (

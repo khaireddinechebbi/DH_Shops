@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
@@ -41,16 +42,16 @@ export async function POST(req: NextRequest) {
 
         // Check if already following
         const isFollowing = currentUser.following.some(
-            (id: any) => id.toString() === targetUserId
+            (id: mongoose.Types.ObjectId) => id.toString() === targetUserId
         );
 
         if (isFollowing) {
             // Unfollow: remove from current user's following and target user's followers
             currentUser.following = currentUser.following.filter(
-                (id: any) => id.toString() !== targetUserId
+                (id: mongoose.Types.ObjectId) => id.toString() !== targetUserId
             );
             targetUser.followers = targetUser.followers.filter(
-                (id: any) => id.toString() !== currentUser._id.toString()
+                (id: mongoose.Types.ObjectId) => id.toString() !== currentUser._id.toString()
             );
         } else {
             // Follow: add to current user's following and target user's followers

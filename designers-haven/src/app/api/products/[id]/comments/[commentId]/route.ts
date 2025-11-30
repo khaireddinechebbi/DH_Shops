@@ -38,7 +38,7 @@ export async function DELETE(
 
         // Find the comment
         const commentIndex = product.comments.findIndex(
-            (comment) => comment._id.toString() === commentId
+            (comment: { _id: { toString: () => string } }) => comment._id.toString() === commentId
         );
 
         if (commentIndex === -1) {

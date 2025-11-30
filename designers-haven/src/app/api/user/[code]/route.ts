@@ -1,9 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
-import Product from "@/models/Products";
+
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import mongoose from "mongoose";
+import { UserDocument } from "@/types/types";
 
 export async function GET(
     req: NextRequest,
@@ -39,12 +41,13 @@ export async function GET(
         if (session?.user?.email) {
             const currentUser = await User.findOne({ email: session.user.email }).select('following');
             if (currentUser && currentUser.following) {
-                isFollowing = currentUser.following.some((id: any) => id.toString() === user._id.toString());
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                isFollowing = currentUser.following.some((id: mongoose.Types.ObjectId) => id.toString() === (user as any)._id.toString());
             }
         }
 
         // Return public user data
-        const userData = user as any;
+        const userData = user as unknown as UserDocument;
         return NextResponse.json({
             _id: userData._id,
             name: userData.name,

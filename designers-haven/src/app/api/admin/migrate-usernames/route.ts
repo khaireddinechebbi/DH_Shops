@@ -10,7 +10,7 @@ export async function GET() {
         const results = [];
 
         for (const user of users) {
-            let baseUsername = user.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
+            const baseUsername = user.name.toLowerCase().replace(/[^a-z0-9]/g, '_');
             let uniqueUsername = baseUsername;
             let counter = 1;
 

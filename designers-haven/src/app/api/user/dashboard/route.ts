@@ -1,11 +1,12 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Order from "@/models/Orders";
-import User from "@/models/User";
 
-export async function GET(req: NextRequest) {
+
+
+export async function GET() {
     try {
         const session = await getServerSession(authOptions);
 
@@ -23,12 +24,13 @@ export async function GET(req: NextRequest) {
         // Calculate Income (from products sold to others)
         let totalIncome = 0;
         let incomeThisMonth = 0;
-        const incomeTransactions: any[] = [];
+        const incomeTransactions: unknown[] = [];
         const productSales: Map<string, { title: string; count: number; revenue: number }> = new Map();
 
         const now = new Date();
         const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
+        /* eslint-disable @typescript-eslint/no-explicit-any */
         allOrders.forEach((order: any) => {
             // Skip own purchases
             if (order.userEmail === userEmail) return;
@@ -76,7 +78,7 @@ export async function GET(req: NextRequest) {
         // Calculate Expenses (from own purchases)
         let totalExpenses = 0;
         let expensesThisMonth = 0;
-        const expenseTransactions: any[] = [];
+        const expenseTransactions: unknown[] = [];
 
         const myOrders = allOrders.filter((order: any) => order.userEmail === userEmail);
 

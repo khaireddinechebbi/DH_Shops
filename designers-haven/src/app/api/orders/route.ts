@@ -5,6 +5,7 @@ import { connectDB } from "@/lib/mongodb";
 import User from "@/models/User";
 import Order from "@/models/Orders";
 import Product from "@/models/Products";
+import { CartItem } from "@/types/types";
 
 
 // POST method to handle order submission
@@ -35,7 +36,7 @@ export async function POST(request: Request) {
 
     // Enrich items with product owner information
     const enrichedItems = await Promise.all(
-      items.map(async (item: any) => {
+      items.map(async (item: CartItem) => {
         const product = await Product.findById(item.productId);
         return {
           ...item,

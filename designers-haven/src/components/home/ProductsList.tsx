@@ -6,27 +6,10 @@ import { ProductDocument } from '@/types/types';
 
 
 // Define the type for the API response
-interface ProductsResponse {
-  products: ProductDocument[];
-}
+
 
 // Function to fetch products
-const getProducts = async (): Promise<ProductsResponse | null> => {
-  try {
-    const res = await fetch('/api/products', {
-      cache: 'no-cache',
-    });
 
-    if (!res.ok) {
-      throw new Error('Failed fetching');
-    }
-
-    return res.json();
-  } catch (err) {
-    console.error(err);
-    return null; // Return null on error
-  }
-};
 
 interface ProductsListProps {
   products: ProductDocument[];

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 export default function Landing() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function Landing() {
           <div className="animate-slide-down">
             <h1 className="text-7xl md:text-8xl lg:text-9xl font-display font-bold mb-6 leading-tight">
               <span className="block bg-gradient-to-r from-purple-600 via-pink-600 to-indigo-600 bg-clip-text text-transparent">
-                Designer's Haven
+                Designer&apos;s Haven
               </span>
             </h1>
             <p className="text-2xl md:text-3xl text-gray-700 mb-8 max-w-3xl mx-auto font-light animate-slide-up delay-200">
@@ -199,7 +199,7 @@ export default function Landing() {
                         <FaStar key={i} className="text-yellow-400" />
                       ))}
                     </div>
-                    <p className="text-gray-700 mb-6 italic leading-relaxed">"{testimonial.quote}"</p>
+                    <p className="text-gray-700 mb-6 italic leading-relaxed">&quot;{testimonial.quote}&quot;</p>
                     <div>
                       <div className="font-bold text-gray-900">{testimonial.author}</div>
                       <div className="text-sm text-gray-600">{testimonial.role}</div>
@@ -241,7 +241,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-12 mb-12">
             <div>
               <h3 className="text-2xl font-display font-bold mb-4 bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Designer's Haven
+                Designer&apos;s Haven
               </h3>
               <p className="text-gray-400">
                 Bridging fashion designers with the world
@@ -269,7 +269,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="border-t border-gray-800 pt-8 text-center text-gray-400">
-            <p>© 2024 Designer's Haven. A Holberton School Portfolio Project.</p>
+            <p>© 2024 Designer&apos;s Haven. A Holberton School Portfolio Project.</p>
           </div>
         </div>
       </footer>

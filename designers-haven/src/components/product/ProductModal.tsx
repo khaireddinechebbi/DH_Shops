@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CommentDocument, ImageDocument, ProductDocument } from '@/types/types';
+import { CommentDocument, ProductDocument } from '@/types/types';
 import { useCart } from '@/context/CartContext';
 import { useSession } from 'next-auth/react';
 import { FaHeart, FaRegHeart, FaPaperPlane, FaTrash, FaPenSquare } from 'react-icons/fa';
@@ -29,6 +29,19 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
   const [likesCount, setLikesCount] = useState(0);
 
   useEffect(() => {
+    const fetchComments = async () => {
+      if (!product) return;
+      try {
+        const res = await fetch(`/api/products/${product._id}/comments`);
+        if (res.ok) {
+          const data = await res.json();
+          setComments(data.comments || []); // Extract comments array from response
+        }
+      } catch (error) {
+        console.error("Error fetching comments:", error);
+      }
+    };
+
     if (product) {
       setComments(product.comments || []);
       setLikesCount(product.likes?.length || 0);
@@ -38,19 +51,6 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
       // For now, default to false unless we persist it in parent or fetch it
     }
   }, [product]);
-
-  const fetchComments = async () => {
-    if (!product) return;
-    try {
-      const res = await fetch(`/api/products/${product._id}/comments`);
-      if (res.ok) {
-        const data = await res.json();
-        setComments(data.comments || []); // Extract comments array from response
-      }
-    } catch (error) {
-      console.error("Error fetching comments:", error);
-    }
-  };
 
   const handleNext = () => {
     if (product && product.images.length > 0) {
@@ -240,7 +240,7 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
             </p>
 
             {/* Owner Actions */}
-            {session?.user?.email === (product as any).ownerEmail && (
+            {session?.user?.email === product.ownerEmail && (
               <div className="flex gap-2 mt-4">
                 {onEdit && (
                   <button
@@ -319,19 +319,28 @@ export const ProductModal: React.FC<ProductModalProps> = ({ product, onClose, on
                   <div className="flex justify-between items-start">
                     <div className="flex items-center gap-2 mb-1">
                       <div className="w-6 h-6 rounded-full bg-gray-300 overflow-hidden relative">
-                        {comment.user?.image?.[0] ? (
-                          <Image src={comment.user.image[0]} alt="User" fill className="object-cover" />
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        {(comment.user as any)?.image?.[0] ? (
+                          /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                          <Image src={(comment.user as any).image[0]} alt="User" fill className="object-cover" />
                         ) : (
-                          <div className="w-full h-full bg-gradient-accent" />
+                          <div className="w-full h-full flex items-center justify-center text-xs text-gray-500">U</div>
                         )}
                       </div>
-                      <span className="font-semibold text-sm">{comment.user?.name || 'User'}</span>
-                      <span className="text-xs text-gray-400">{new Date(comment.date).toLocaleDateString()}</span>
+                      <div>
+                        <p className="font-semibold text-sm text-gray-900">
+                          {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                          {(comment.user as any)?.name || (comment.user as any)?.username || 'Anonymous'}
+                        </p>
+                        <span className="text-xs text-gray-400">{new Date(comment.date).toLocaleDateString()}</span>
+                      </div>
                     </div>
                     {/* Check ownership using ID (preferred) or email (fallback) */}
                     {(session?.user && (
-                      (session.user as any).id === comment.user?._id ||
-                      session.user.email === comment.user?.email
+                      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                      (session.user as { id?: string }).id === (comment.user as any)?._id ||
+                      /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+                      session.user.email === (comment.user as any)?.email
                     )) && (
                         <button onClick={() => handleDeleteComment(comment._id)} className="text-red-400 hover:text-red-600">
                           <FaTrash size={12} />

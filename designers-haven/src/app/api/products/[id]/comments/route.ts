@@ -27,7 +27,8 @@ export async function GET(
             );
         }
 
-        return NextResponse.json({ comments: product.comments || [] }, { status: 200 });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return NextResponse.json({ comments: (product as any).comments || [] }, { status: 200 });
     } catch (error) {
         console.error("Error fetching comments:", error);
         return NextResponse.json(

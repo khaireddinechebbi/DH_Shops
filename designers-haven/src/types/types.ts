@@ -65,7 +65,7 @@ export interface ImageDocument {
 // Interface for comments on the product
 export interface CommentDocument {
     _id: string;
-    user: UserDocument | mongoose.Schema.Types.ObjectId | any; // ID of the user who commented or populated user
+    user: UserDocument | mongoose.Schema.Types.ObjectId | unknown; // ID of the user who commented or populated user
     text: string;  // The comment text
     date: Date;    // Date of the comment
 }

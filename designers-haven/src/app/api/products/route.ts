@@ -6,6 +6,7 @@ import { writeFile } from "fs/promises";
 import { join } from "path";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
+import mongoose from "mongoose";
 
 export async function POST(request: NextRequest) {
     await connectDB();
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
 
 
 
-export async function GET(request: NextRequest) {
+export async function GET() {
     await connectDB();
     try {
         // Get session to check if user is logged in
@@ -99,7 +100,7 @@ export async function GET(request: NextRequest) {
         // Add isLiked field for each product if user is logged in
         const productsWithLikeStatus = products.map(product => ({
             ...product,
-            isLiked: currentUserId ? product.likes?.some((id: any) => id.toString() === currentUserId) : false,
+            isLiked: currentUserId ? product.likes?.some((id: mongoose.Types.ObjectId) => id.toString() === currentUserId) : false,
             likesCount: product.likes?.length || 0,
             commentsCount: product.comments?.length || 0,
         }));

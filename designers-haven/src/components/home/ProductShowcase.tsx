@@ -17,7 +17,7 @@ export default function ProductShowcase({ products, onRefresh }: ProductShowcase
         sex: '',
     });
 
-    const [isFilterOpen, setIsFilterOpen] = useState(false);
+
 
     // Extract unique values for filters
     const categories = useMemo(() => [...new Set(products.map(p => p.category))].filter(Boolean).sort(), [products]);

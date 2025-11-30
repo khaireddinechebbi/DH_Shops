@@ -75,7 +75,7 @@ export const authOptions: NextAuthOptions = {
         secret: process.env.AUTH_SECRET,
     },
     callbacks: {
-        async signIn({ user, account, profile }) {
+        async signIn({ user, account }) {
             if (account?.provider === "google" || account?.provider === "facebook") {
                 try {
                     await connectDB();
@@ -137,7 +137,7 @@ export const authOptions: NextAuthOptions = {
                 token.id = user._id ? user._id.toString() : token.id;
                 token.username = user.username;
                 token.userCode = user.userCode;
-                token.sub = (user as any).sub || (account && account.providerAccountId) || token.sub;
+                token.sub = (user as { sub?: string }).sub || (account && account.providerAccountId) || token.sub;
             }
 
             // If token doesn't have userCode but has email, fetch it from database

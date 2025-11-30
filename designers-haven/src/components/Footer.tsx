@@ -27,7 +27,7 @@ export default function Footer() {
                 />
               </div>
               <span className="font-display text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-                Designer's Haven
+                Designer&apos;s Haven
               </span>
             </div>
             <p className="text-gray-300 text-sm leading-relaxed mb-6 max-w-md">
@@ -110,7 +110,7 @@ export default function Footer() {
         {/* Bottom Section */}
         <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-gray-400 text-sm">
-            © {new Date().getFullYear()} Designer's Haven. All rights reserved.
+            © {new Date().getFullYear()} Designer&apos;s Haven. All rights reserved.
           </p>
           <p className="text-gray-400 text-sm flex items-center gap-1">
             Made with <FaHeart className="text-red-500 animate-pulse" /> by passionate designers

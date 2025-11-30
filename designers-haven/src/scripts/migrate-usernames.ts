@@ -27,7 +27,7 @@ async function migrateUsernames() {
         const usedUsernames = new Set<string>();
 
         // Get all existing usernames to avoid conflicts
-        const existingUsers = await User.find({ username: { $exists: true, $ne: null, $ne: "" } }).select('username');
+        const existingUsers = await User.find({ username: { $exists: true, $ne: null }, $and: [{ username: { $ne: "" } }] }).select('username');
         existingUsers.forEach(user => {
             if (user.username) {
                 usedUsernames.add(user.username.toLowerCase());

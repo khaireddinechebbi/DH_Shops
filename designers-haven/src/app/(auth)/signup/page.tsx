@@ -42,8 +42,12 @@ export default function Signup() {
       if (signInRes?.ok) {
         router.push("/home");
       }
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unexpected error occurred");
+      }
       setLoading(false);
     }
   };

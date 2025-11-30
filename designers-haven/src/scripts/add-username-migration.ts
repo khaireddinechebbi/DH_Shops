@@ -14,7 +14,7 @@ async function migrate() {
         console.log(`Found ${users.length} users without username`);
 
         for (const user of users) {
-            let baseUsername = user.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
+            const baseUsername = user.name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
             let username = baseUsername;
             let counter = 1;
 

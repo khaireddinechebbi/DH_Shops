@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectDB } from "@/lib/mongodb";
 import Notification from "@/models/Notification";
 import User from "@/models/User";
 
-export async function GET(req: NextRequest) {
+export async function GET() {
     try {
         const session = await getServerSession(authOptions);
 
@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
 }
 
 // Mark notifications as read
-export async function PUT(req: NextRequest) {
+export async function PUT() {
     try {
         const session = await getServerSession(authOptions);
 
